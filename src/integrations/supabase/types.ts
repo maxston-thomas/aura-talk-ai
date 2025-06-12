@@ -9,13 +9,117 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      conversation_limits: {
+        Row: {
+          ads_watched_count: number | null
+          created_at: string | null
+          date: string
+          id: string
+          message_count: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ads_watched_count?: number | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          message_count?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ads_watched_count?: number | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          message_count?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          discount_percentage: number | null
+          email: string
+          id: string
+          is_first_100_user: boolean | null
+          launch_user_number: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          discount_percentage?: number | null
+          email: string
+          id: string
+          is_first_100_user?: boolean | null
+          launch_user_number?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          discount_percentage?: number | null
+          email?: string
+          id?: string
+          is_first_100_user?: boolean | null
+          launch_user_number?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          plan_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          plan_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          plan_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_conversation_limit: {
+        Args: { user_id: string }
+        Returns: {
+          can_send: boolean
+          current_count: number
+          limit_reached: boolean
+        }[]
+      }
+      increment_conversation_count: {
+        Args: { user_id: string }
+        Returns: undefined
+      }
+      reset_conversation_count_after_ad: {
+        Args: { user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
