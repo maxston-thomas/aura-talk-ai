@@ -8,12 +8,15 @@ import { Toaster } from "@/components/ui/sonner";
 import AuthModal from '@/components/AuthModal';
 import MoodSelector from '@/components/MoodSelector';
 import ChatInterface from '@/components/ChatInterface';
+import PrivacyPolicy from '@/components/PrivacyPolicy';
+import TermsConditions from '@/components/TermsConditions';
 
 function AppContent() {
   const { user, loading } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [showChat, setShowChat] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'home' | 'privacy' | 'terms'>('home');
 
   if (loading) {
     return (
@@ -26,6 +29,14 @@ function AppContent() {
         </div>
       </div>
     );
+  }
+
+  if (currentPage === 'privacy') {
+    return <PrivacyPolicy onBack={() => setCurrentPage('home')} />;
+  }
+
+  if (currentPage === 'terms') {
+    return <TermsConditions onBack={() => setCurrentPage('home')} />;
   }
 
   if (showChat && selectedMood) {
@@ -111,26 +122,36 @@ function AppContent() {
       <div className="relative z-10 container mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <Sparkles className="w-8 h-8 text-white" />
+          <div className="w-20 h-20 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
+            <Sparkles className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent mb-6">
             AuraTalk
           </h1>
-          <p className="text-xl md:text-2xl text-slate-600 mb-6 leading-relaxed">
+          <p className="text-2xl md:text-3xl text-slate-600 mb-4 leading-relaxed">
             Your Voice-Powered Emotional AI Companion
           </p>
-          <p className="text-lg text-slate-500 mb-8 max-w-2xl mx-auto">
-            Speak freely and feel heard with complete privacy. No conversations saved.
-          </p>
+          
+          {/* Privacy-focused quotes */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <p className="text-lg text-slate-500 mb-3 italic">
+              "Speak freely and feel heard with complete privacy. No conversations saved."
+            </p>
+            <p className="text-lg text-slate-500 mb-3 italic">
+              "A safe space for your thoughts and feelings"
+            </p>
+            <p className="text-lg text-slate-500 mb-6 italic">
+              "Privacy-first emotional support platform"
+            </p>
+          </div>
           
           {/* Privacy Banner */}
-          <Card className="bg-white/40 backdrop-blur-md border-white/30 p-6 max-w-3xl mx-auto mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Shield className="w-6 h-6 text-green-600" />
-              <h3 className="text-lg font-semibold text-slate-800">Complete Privacy Guaranteed</h3>
+          <Card className="bg-white/40 backdrop-blur-md border-white/30 p-8 max-w-4xl mx-auto mb-12">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <Shield className="w-8 h-8 text-green-600" />
+              <h3 className="text-2xl font-semibold text-slate-800">Complete Privacy Guaranteed</h3>
             </div>
-            <p className="text-slate-600">
+            <p className="text-lg text-slate-600 leading-relaxed">
               "AuraTalk doesn't save what you say. Speak freely — we're here to listen, not to log."
             </p>
           </Card>
@@ -138,11 +159,15 @@ function AppContent() {
           <Button
             onClick={() => setShowAuthModal(true)}
             size="lg"
-            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-12 py-6 text-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 mb-8"
           >
-            <Heart className="w-5 h-5 mr-2" />
+            <Heart className="w-6 h-6 mr-3" />
             Start Your Journey
           </Button>
+          
+          <p className="text-sm text-slate-500 mb-4">
+            Made with ❤️ in Chennai by Maxston
+          </p>
         </div>
 
         {/* Features */}
@@ -174,15 +199,31 @@ function AppContent() {
         </div>
 
         {/* Footer */}
-        <div className="text-center space-y-4">
-          <div className="flex justify-center space-x-6 text-sm text-slate-500">
-            <button className="hover:text-slate-700 transition-colors">Privacy Policy</button>
-            <button className="hover:text-slate-700 transition-colors">Terms & Conditions</button>
-            <button className="hover:text-slate-700 transition-colors">Support</button>
+        <div className="text-center space-y-6">
+          <div className="flex justify-center space-x-8 text-base text-slate-500">
+            <button 
+              onClick={() => setCurrentPage('privacy')}
+              className="hover:text-slate-700 transition-colors underline underline-offset-4"
+            >
+              Privacy Policy
+            </button>
+            <button 
+              onClick={() => setCurrentPage('terms')}
+              className="hover:text-slate-700 transition-colors underline underline-offset-4"
+            >
+              Terms & Conditions
+            </button>
+            <a 
+              href="mailto:footballarchive29@gmail.com"
+              className="hover:text-slate-700 transition-colors underline underline-offset-4"
+            >
+              Support
+            </a>
           </div>
-          <p className="text-xs text-slate-400">
-            Built for your peace of mind. No saving, no judging. • Contact: footballarchive29@gmail.com
-          </p>
+          <div className="text-sm text-slate-400 space-y-2">
+            <p>© 2025 AuraTalk AI. All rights reserved. Privacy-first emotional support platform.</p>
+            <p>UPI ID for Indian transactions: maxstonthomas@oksbi</p>
+          </div>
         </div>
       </div>
 
