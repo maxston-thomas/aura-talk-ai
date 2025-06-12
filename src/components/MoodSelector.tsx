@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Smile, Frown, Peace } from 'lucide-react';
+import { Smile, Frown, Heart } from 'lucide-react';
 
 interface MoodSelectorProps {
   onMoodSelect: (mood: string) => void;
@@ -30,7 +29,7 @@ const MoodSelector = ({ onMoodSelect }: MoodSelectorProps) => {
       id: 'calm',
       name: 'Calm',
       description: 'Peaceful and balanced',
-      icon: Peace,
+      icon: Heart,
       gradient: 'from-blue-400 to-indigo-500',
       bgGradient: 'from-blue-50 to-indigo-50'
     }
