@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -15,7 +16,8 @@ const MoodSelector = ({ onMoodSelect }: MoodSelectorProps) => {
       description: 'Feeling good and positive',
       icon: Smile,
       gradient: 'from-green-400 to-emerald-500',
-      bgGradient: 'from-green-50 to-emerald-50'
+      bgGradient: 'from-green-50 to-emerald-50',
+      hoverBg: 'hover:bg-green-100/60 dark:hover:bg-green-900/30'
     },
     {
       id: 'unpleasant',
@@ -23,7 +25,8 @@ const MoodSelector = ({ onMoodSelect }: MoodSelectorProps) => {
       description: 'Need support and understanding',
       icon: Frown,
       gradient: 'from-orange-400 to-red-500',
-      bgGradient: 'from-orange-50 to-red-50'
+      bgGradient: 'from-orange-50 to-red-50',
+      hoverBg: 'hover:bg-orange-100/60 dark:hover:bg-orange-900/30'
     },
     {
       id: 'calm',
@@ -31,17 +34,18 @@ const MoodSelector = ({ onMoodSelect }: MoodSelectorProps) => {
       description: 'Peaceful and balanced',
       icon: Heart,
       gradient: 'from-blue-400 to-indigo-500',
-      bgGradient: 'from-blue-50 to-indigo-50'
+      bgGradient: 'from-blue-50 to-indigo-50',
+      hoverBg: 'hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
     }
   ];
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-semibold text-slate-800 mb-4">
+        <h2 className="text-3xl font-semibold text-slate-800 dark:text-slate-200 mb-4">
           How are you feeling today?
         </h2>
-        <p className="text-slate-600 text-lg">
+        <p className="text-slate-600 dark:text-slate-400 text-lg">
           Choose your current mood to help me understand how to best support you.
         </p>
       </div>
@@ -52,17 +56,17 @@ const MoodSelector = ({ onMoodSelect }: MoodSelectorProps) => {
           return (
             <Card
               key={mood.id}
-              className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl bg-white/60 backdrop-blur-sm border-white/30 hover:bg-white/80"
+              className={`group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/30 ${mood.hoverBg}`}
               onClick={() => onMoodSelect(mood.id)}
             >
-              <div className={`p-6 text-center bg-gradient-to-br ${mood.bgGradient} rounded-lg`}>
+              <div className={`p-6 text-center bg-gradient-to-br ${mood.bgGradient} dark:from-slate-800 dark:to-slate-700 rounded-lg transition-colors duration-300`}>
                 <div className={`w-16 h-16 bg-gradient-to-r ${mood.gradient} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
                   <IconComponent className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-2">
+                <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">
                   {mood.name}
                 </h3>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-slate-400">
                   {mood.description}
                 </p>
               </div>
