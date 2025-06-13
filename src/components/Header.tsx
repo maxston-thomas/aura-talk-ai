@@ -22,8 +22,20 @@ const Header = () => {
   const handleThemeChange = (themeId: string) => {
     setCurrentTheme(themeId);
     setShowThemeDropdown(false);
-    // Apply theme to document root
     document.documentElement.setAttribute('data-theme', themeId);
+    
+    // Apply theme colors to CSS variables
+    const themeColors = {
+      blue: { primary: '59 130 246', secondary: '147 51 234', accent: '236 72 153' },
+      green: { primary: '34 197 94', secondary: '16 185 129', accent: '20 184 166' },
+      purple: { primary: '147 51 234', secondary: '236 72 153', accent: '99 102 241' },
+      orange: { primary: '251 146 60', secondary: '239 68 68', accent: '236 72 153' }
+    };
+    
+    const colors = themeColors[themeId as keyof typeof themeColors];
+    document.documentElement.style.setProperty('--theme-primary', colors.primary);
+    document.documentElement.style.setProperty('--theme-secondary', colors.secondary);
+    document.documentElement.style.setProperty('--theme-accent', colors.accent);
   };
 
   const toggleDarkMode = () => {
@@ -34,64 +46,67 @@ const Header = () => {
   if (!user) return null;
 
   return (
-    <div className="absolute top-4 right-4 z-50 flex items-center gap-4">
-      {/* User Email */}
-      <div className="bg-white/40 backdrop-blur-md border-white/30 rounded-lg px-4 py-2">
-        <div className="flex items-center gap-2 text-slate-700">
+    <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between">
+      {/* User Email - Left Side */}
+      <div className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 rounded-lg px-4 py-2">
+        <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
           <User className="w-4 h-4" />
           <span className="text-sm font-medium">{user.email}</span>
         </div>
       </div>
 
-      {/* Theme Selector */}
-      <div className="relative">
+      {/* Controls - Right Side */}
+      <div className="flex items-center gap-4">
+        {/* Theme Selector */}
+        <div className="relative">
+          <Button
+            variant="ghost"
+            onClick={() => setShowThemeDropdown(!showThemeDropdown)}
+            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60"
+          >
+            <Palette className="w-4 h-4 mr-2" />
+            Themes
+            <ChevronDown className="w-4 h-4 ml-2" />
+          </Button>
+          
+          {showThemeDropdown && (
+            <Card className="absolute top-full mt-2 right-0 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/40 dark:border-slate-700/40 p-2 min-w-48 z-50">
+              {themes.map((theme) => (
+                <Button
+                  key={theme.id}
+                  variant="ghost"
+                  onClick={() => handleThemeChange(theme.id)}
+                  className={`w-full justify-start mb-1 ${currentTheme === theme.id ? 'bg-white/60 dark:bg-slate-700/60' : 'hover:bg-white/40 dark:hover:bg-slate-700/40'}`}
+                >
+                  <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${theme.colors} mr-3`}></div>
+                  {theme.name}
+                </Button>
+              ))}
+            </Card>
+          )}
+        </div>
+
+        {/* Dark Mode Toggle */}
+        <div className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 rounded-lg px-4 py-2">
+          <div className="flex items-center gap-3">
+            <Sun className="w-4 h-4 text-yellow-500" />
+            <Switch
+              checked={isDarkMode}
+              onCheckedChange={toggleDarkMode}
+            />
+            <Moon className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+          </div>
+        </div>
+
+        {/* Sign Out */}
         <Button
           variant="ghost"
-          onClick={() => setShowThemeDropdown(!showThemeDropdown)}
-          className="bg-white/40 backdrop-blur-md border-white/30 hover:bg-white/60"
+          onClick={signOut}
+          className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 text-red-600 dark:text-red-400"
         >
-          <Palette className="w-4 h-4 mr-2" />
-          Themes
-          <ChevronDown className="w-4 h-4 ml-2" />
+          Sign Out
         </Button>
-        
-        {showThemeDropdown && (
-          <Card className="absolute top-full mt-2 right-0 bg-white/60 backdrop-blur-md border-white/40 p-2 min-w-48 z-50">
-            {themes.map((theme) => (
-              <Button
-                key={theme.id}
-                variant="ghost"
-                onClick={() => handleThemeChange(theme.id)}
-                className={`w-full justify-start mb-1 ${currentTheme === theme.id ? 'bg-white/60' : 'hover:bg-white/40'}`}
-              >
-                <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${theme.colors} mr-3`}></div>
-                {theme.name}
-              </Button>
-            ))}
-          </Card>
-        )}
       </div>
-
-      {/* Dark Mode Toggle */}
-      <div className="bg-white/40 backdrop-blur-md border-white/30 rounded-lg px-4 py-2">
-        <div className="flex items-center gap-3">
-          <Sun className="w-4 h-4 text-yellow-500" />
-          <Switch
-            checked={isDarkMode}
-            onCheckedChange={toggleDarkMode}
-          />
-          <Moon className="w-4 h-4 text-slate-600" />
-        </div>
-      </div>
-
-      {/* Sign Out */}
-      <Button
-        variant="ghost"
-        onClick={signOut}
-        className="bg-white/40 backdrop-blur-md border-white/30 hover:bg-white/60 text-red-600"
-      >
-        Sign Out
-      </Button>
     </div>
   );
 };

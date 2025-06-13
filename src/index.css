@@ -45,6 +45,11 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Theme variables */
+    --theme-primary: 59 130 246;
+    --theme-secondary: 147 51 234;
+    --theme-accent: 236 72 153;
   }
 
   .dark {
@@ -109,6 +114,65 @@
     --theme-secondary: 239 68 68;
     --theme-accent: 236 72 153;
   }
+
+  /* Dynamic theme backgrounds */
+  [data-theme="blue"] body {
+    background: linear-gradient(135deg, rgb(248 250 252) 0%, rgb(219 234 254) 50%, rgb(199 210 254) 100%);
+  }
+
+  [data-theme="green"] body {
+    background: linear-gradient(135deg, rgb(240 253 244) 0%, rgb(196 253 221) 50%, rgb(167 243 208) 100%);
+  }
+
+  [data-theme="purple"] body {
+    background: linear-gradient(135deg, rgb(250 245 255) 0%, rgb(233 213 255) 50%, rgb(196 181 253) 100%);
+  }
+
+  [data-theme="orange"] body {
+    background: linear-gradient(135deg, rgb(255 251 235) 0%, rgb(254 215 170) 50%, rgb(253 186 116) 100%);
+  }
+
+  /* Dark mode theme backgrounds */
+  [data-theme="blue"].dark body {
+    background: linear-gradient(135deg, rgb(15 23 42) 0%, rgb(30 41 59) 50%, rgb(51 65 85) 100%);
+  }
+
+  [data-theme="green"].dark body {
+    background: linear-gradient(135deg, rgb(20 83 45) 0%, rgb(22 101 52) 50%, rgb(34 197 94) 100%);
+  }
+
+  [data-theme="purple"].dark body {
+    background: linear-gradient(135deg, rgb(88 28 135) 0%, rgb(124 58 237) 50%, rgb(147 51 234) 100%);
+  }
+
+  [data-theme="orange"].dark body {
+    background: linear-gradient(135deg, rgb(154 52 18) 0%, rgb(194 65 12) 50%, rgb(234 88 12) 100%);
+  }
+
+  /* Mood hover effects */
+  .mood-pleasant:hover {
+    background: linear-gradient(to bottom right, rgb(220 252 231), rgb(187 247 208)) !important;
+  }
+
+  .mood-unpleasant:hover {
+    background: linear-gradient(to bottom right, rgb(255 237 213), rgb(254 215 170)) !important;
+  }
+
+  .mood-calm:hover {
+    background: linear-gradient(to bottom right, rgb(219 234 254), rgb(191 219 254)) !important;
+  }
+
+  .dark .mood-pleasant:hover {
+    background: linear-gradient(to bottom right, rgb(20 83 45), rgb(22 101 52)) !important;
+  }
+
+  .dark .mood-unpleasant:hover {
+    background: linear-gradient(to bottom right, rgb(154 52 18), rgb(194 65 12)) !important;
+  }
+
+  .dark .mood-calm:hover {
+    background: linear-gradient(to bottom right, rgb(30 58 138), rgb(29 78 216)) !important;
+  }
 }
 
 @layer base {
@@ -118,5 +182,6 @@
 
   body {
     @apply bg-background text-foreground;
+    min-height: 100vh;
   }
 }

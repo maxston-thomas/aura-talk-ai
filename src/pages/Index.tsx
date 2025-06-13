@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, Mic, Sparkles, Heart, Shield, Users } from 'lucide-react';
+import { MessageCircle, Mic, Sparkles, Heart, Shield, Users, Crown } from 'lucide-react';
 import { useAuth, AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from "@/components/ui/sonner";
 import AuthModal from '@/components/AuthModal';
@@ -12,6 +12,7 @@ import PrivacyPolicy from '@/components/PrivacyPolicy';
 import TermsConditions from '@/components/TermsConditions';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SubscriptionModal from '@/components/SubscriptionModal';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -19,6 +20,7 @@ function AppContent() {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [showChat, setShowChat] = useState(false);
   const [currentPage, setCurrentPage] = useState<'home' | 'privacy' | 'terms'>('home');
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   if (loading) {
     return (
@@ -48,7 +50,7 @@ function AppContent() {
     }} />;
   }
 
-  if (user && selectedMood) {
+  if (user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
         <Header />
@@ -57,7 +59,7 @@ function AppContent() {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
         
-        <div className="relative z-10 container mx-auto px-4 py-12">
+        <div className="relative z-10 container mx-auto px-4 py-24">
           <div className="text-center mb-12">
             <div className="w-16 h-16 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6">
               <Sparkles className="w-8 h-8 text-white" />
@@ -70,10 +72,14 @@ function AppContent() {
             </p>
           </div>
 
-          {/* Navigation Tabs */}
+          {/* Navigation Tabs - Show early */}
           <div className="flex justify-center mb-8">
             <div className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md rounded-2xl p-2 border border-white/30 dark:border-slate-700/30">
-              <Button onClick={() => setShowChat(true)} className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl mr-2">
+              <Button 
+                onClick={() => selectedMood ? setShowChat(true) : null} 
+                disabled={!selectedMood}
+                className={`rounded-xl mr-2 ${selectedMood ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Instant Chat
               </Button>
@@ -85,31 +91,68 @@ function AppContent() {
           </div>
 
           <MoodSelector onMoodSelect={setSelectedMood} />
-          
-          <div className="mt-16">
-            <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
-  if (user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
-        <Header />
-        
-        {/* Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
-        
-        <div className="relative z-10 container mx-auto px-4 py-12">
-          <MoodSelector onMoodSelect={setSelectedMood} />
+          {/* Pricing Section */}
+          <div className="mt-16 mb-12">
+            <h2 className="text-3xl font-bold text-center text-slate-800 dark:text-slate-200 mb-8">Choose Your Plan</h2>
+            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {/* Free Plan */}
+              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center">
+                <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-4">Free Plan</h3>
+                <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-4">₹0</div>
+                <ul className="space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                  <li>10 conversations per day</li>
+                  <li>Watch ads for 10 more</li>
+                  <li>Basic support</li>
+                </ul>
+                <Button variant="outline" className="w-full">Current Plan</Button>
+              </Card>
+
+              {/* Monthly Plan */}
+              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center border-2 border-purple-500">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
+                    <Crown className="w-4 h-4 mr-1" />
+                    Popular
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-4">Monthly Premium</h3>
+                <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-4">₹199<span className="text-sm font-normal">/month</span></div>
+                <ul className="space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                  <li>Unlimited conversations</li>
+                  <li>No ads</li>
+                  <li>Priority support</li>
+                  <li>Early access to voice chat</li>
+                </ul>
+                <Button onClick={() => setShowSubscriptionModal(true)} className="w-full bg-purple-500 hover:bg-purple-600">Upgrade Now</Button>
+              </Card>
+
+              {/* Lifetime Plan */}
+              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center">
+                <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-4">Lifetime Access</h3>
+                <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-4">₹5,999<span className="text-sm font-normal"> one-time</span></div>
+                <ul className="space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                  <li>Unlimited conversations forever</li>
+                  <li>No ads ever</li>
+                  <li>Priority support</li>
+                  <li>All future features</li>
+                </ul>
+                <Button onClick={() => setShowSubscriptionModal(true)} className="w-full bg-gradient-to-r from-blue-500 to-purple-500">Get Lifetime</Button>
+              </Card>
+            </div>
+          </div>
           
           <div className="mt-16">
             <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
           </div>
         </div>
+
+        <SubscriptionModal
+          isOpen={showSubscriptionModal}
+          onClose={() => setShowSubscriptionModal(false)}
+          onUpgrade={(plan) => console.log('Upgrade to:', plan)}
+          onWatchAd={() => console.log('Watch ad')}
+        />
       </div>
     );
   }
@@ -156,8 +199,8 @@ function AppContent() {
             </p>
           </Card>
 
-          <Button onClick={() => setShowAuthModal(true)} size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-12 py-6 text-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 mb-8">
-            <Heart className="w-6 h-6 mr-3" />
+          <Button onClick={() => setShowAuthModal(true)} size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-16 py-8 text-2xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 mb-8">
+            <Heart className="w-8 h-8 mr-4" />
             Start Your Journey
           </Button>
           
