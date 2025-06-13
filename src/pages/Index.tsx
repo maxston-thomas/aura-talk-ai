@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, Mic, Sparkles, Heart, Shield, Users, Crown } from 'lucide-react';
+import { MessageCircle, Mic, Sparkles, Heart, Shield, Users, Crown, Gift } from 'lucide-react';
 import { useAuth, AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from "@/components/ui/sonner";
 import AuthModal from '@/components/AuthModal';
@@ -13,6 +13,7 @@ import TermsConditions from '@/components/TermsConditions';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SubscriptionModal from '@/components/SubscriptionModal';
+import SupportSection from '@/components/SupportSection';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -21,6 +22,34 @@ function AppContent() {
   const [showChat, setShowChat] = useState(false);
   const [currentPage, setCurrentPage] = useState<'home' | 'privacy' | 'terms'>('home');
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [showSupportSection, setShowSupportSection] = useState(false);
+  const [hoveredMood, setHoveredMood] = useState<string | null>(null);
+
+  // Handle mood selection - navigate directly to chat if user is logged in
+  const handleMoodSelect = (mood: string) => {
+    setSelectedMood(mood);
+    if (user) {
+      setShowChat(true);
+    } else {
+      setShowAuthModal(true);
+    }
+  };
+
+  // Background gradient based on hovered mood
+  const getBackgroundGradient = () => {
+    if (!hoveredMood) return 'from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700';
+    
+    switch (hoveredMood) {
+      case 'pleasant':
+        return 'from-pink-50 via-orange-50 to-rose-100 dark:from-pink-900/30 dark:via-orange-900/30 dark:to-rose-900/30';
+      case 'unpleasant':
+        return 'from-blue-900/20 via-purple-900/20 to-indigo-900/20 dark:from-blue-900/40 dark:via-purple-900/40 dark:to-indigo-900/40';
+      case 'calm':
+        return 'from-teal-50 via-sky-50 to-cyan-100 dark:from-teal-900/30 dark:via-sky-900/30 dark:to-cyan-900/30';
+      default:
+        return 'from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700';
+    }
+  };
 
   if (loading) {
     return (
@@ -52,7 +81,7 @@ function AppContent() {
 
   if (user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
+      <div className={`min-h-screen bg-gradient-to-br ${getBackgroundGradient()} relative overflow-hidden transition-all duration-500`}>
         <Header />
         
         {/* Background Effects */}
@@ -72,25 +101,11 @@ function AppContent() {
             </p>
           </div>
 
-          {/* Navigation Tabs - Show early */}
-          <div className="flex justify-center mb-8">
-            <div className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md rounded-2xl p-2 border border-white/30 dark:border-slate-700/30">
-              <Button 
-                onClick={() => selectedMood ? setShowChat(true) : null} 
-                disabled={!selectedMood}
-                className={`rounded-xl mr-2 ${selectedMood ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-              >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Instant Chat
-              </Button>
-              <Button disabled variant="ghost" className="text-slate-500 dark:text-slate-400 cursor-not-allowed rounded-xl">
-                <Mic className="w-4 h-4 mr-2" />
-                Voice Chat (Coming Soon)
-              </Button>
-            </div>
-          </div>
-
-          <MoodSelector onMoodSelect={setSelectedMood} />
+          {/* Mood Selector with Hover Effects */}
+          <MoodSelector 
+            onMoodSelect={handleMoodSelect} 
+            onMoodHover={setHoveredMood}
+          />
 
           {/* Pricing Section */}
           <div className="mt-16 mb-12">
@@ -127,8 +142,29 @@ function AppContent() {
                 <Button onClick={() => setShowSubscriptionModal(true)} className="w-full bg-purple-500 hover:bg-purple-600">Upgrade Now</Button>
               </Card>
 
-              {/* Lifetime Plan */}
+              {/* Yearly Plan */}
               <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center">
+                <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-4">Yearly Premium</h3>
+                <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">₹1,499<span className="text-sm font-normal">/year</span></div>
+                <div className="text-sm text-green-600 dark:text-green-400 mb-4">Save ₹889!</div>
+                <ul className="space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                  <li>Unlimited conversations</li>
+                  <li>No ads</li>
+                  <li>Priority support</li>
+                  <li>All future features</li>
+                </ul>
+                <Button onClick={() => setShowSubscriptionModal(true)} className="w-full bg-green-500 hover:bg-green-600">Get Yearly</Button>
+              </Card>
+            </div>
+
+            {/* Lifetime Plan - Standalone */}
+            <div className="mt-6 max-w-md mx-auto">
+              <Card className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-600/20 dark:to-purple-600/20 backdrop-blur-md border-blue-300/30 dark:border-blue-600/30 p-6 text-center border-2">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-1 rounded-full text-sm font-medium">
+                    Best Value
+                  </div>
+                </div>
                 <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-4">Lifetime Access</h3>
                 <div className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-4">₹5,999<span className="text-sm font-normal"> one-time</span></div>
                 <ul className="space-y-2 text-slate-600 dark:text-slate-400 mb-6">
@@ -141,6 +177,20 @@ function AppContent() {
               </Card>
             </div>
           </div>
+
+          {/* Support Section */}
+          <div className="mt-16 text-center">
+            <Button
+              onClick={() => setShowSupportSection(!showSupportSection)}
+              variant="ghost"
+              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60"
+            >
+              <Gift className="w-4 h-4 mr-2" />
+              Support Us
+            </Button>
+          </div>
+
+          {showSupportSection && <SupportSection />}
           
           <div className="mt-16">
             <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
@@ -158,7 +208,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br ${getBackgroundGradient()} relative overflow-hidden transition-all duration-500`}>
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
@@ -199,8 +249,8 @@ function AppContent() {
             </p>
           </Card>
 
-          <Button onClick={() => setShowAuthModal(true)} size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-16 py-8 text-2xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 mb-8">
-            <Heart className="w-8 h-8 mr-4" />
+          <Button onClick={() => setShowAuthModal(true)} size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-20 py-10 text-3xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 mb-8">
+            <Heart className="w-10 h-10 mr-6" />
             Start Your Journey
           </Button>
           
@@ -209,8 +259,14 @@ function AppContent() {
           </p>
         </div>
 
+        {/* Mood Selector for logged out users */}
+        <MoodSelector 
+          onMoodSelect={handleMoodSelect} 
+          onMoodHover={setHoveredMood}
+        />
+
         {/* Features */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16 mt-16">
           <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
             <MessageCircle className="w-12 h-12 text-blue-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Instant Chat</h3>

@@ -6,9 +6,10 @@ import { Smile, Frown, Heart } from 'lucide-react';
 
 interface MoodSelectorProps {
   onMoodSelect: (mood: string) => void;
+  onMoodHover?: (mood: string | null) => void;
 }
 
-const MoodSelector = ({ onMoodSelect }: MoodSelectorProps) => {
+const MoodSelector = ({ onMoodSelect, onMoodHover }: MoodSelectorProps) => {
   const moods = [
     {
       id: 'pleasant',
@@ -46,7 +47,7 @@ const MoodSelector = ({ onMoodSelect }: MoodSelectorProps) => {
           How are you feeling today?
         </h2>
         <p className="text-slate-600 dark:text-slate-400 text-lg">
-          Choose your current mood to help me understand how to best support you.
+          Choose your current mood to start your conversation.
         </p>
       </div>
 
@@ -58,6 +59,8 @@ const MoodSelector = ({ onMoodSelect }: MoodSelectorProps) => {
               key={mood.id}
               className={`group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/30 ${mood.hoverBg}`}
               onClick={() => onMoodSelect(mood.id)}
+              onMouseEnter={() => onMoodHover?.(mood.id)}
+              onMouseLeave={() => onMoodHover?.(null)}
             >
               <div className={`p-6 text-center bg-gradient-to-br ${mood.bgGradient} dark:from-slate-800 dark:to-slate-700 rounded-lg transition-colors duration-300`}>
                 <div className={`w-16 h-16 bg-gradient-to-r ${mood.gradient} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>

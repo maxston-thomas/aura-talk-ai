@@ -3,11 +3,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, ArrowLeft, LogOut, Volume2, VolumeX } from 'lucide-react';
+import { Send, Sparkles, ArrowLeft, Volume2, VolumeX } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useMessageLimits } from '@/hooks/useMessageLimits';
 import ModeSelector from './ModeSelector';
 import SubscriptionModal from './SubscriptionModal';
+import Header from './Header';
 import { toast } from 'sonner';
 import { aiChatService, ChatMessage } from '@/services/aiChatService';
 
@@ -17,7 +18,7 @@ interface ChatInterfaceProps {
 }
 
 const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { canSend, currentCount, limitReached, incrementCount, resetAfterAd } = useMessageLimits();
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -27,7 +28,10 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [highlightedWord, setHighlightedWord] = useState<string>('');
+  const [typingText, setTypingText] = useState('');
+  const [currentTypingIndex, setCurrentTypingIndex] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -35,7 +39,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, typingText]);
 
   useEffect(() => {
     if (limitReached) {
@@ -70,6 +74,31 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     }]);
   }, [mood, selectedMode]);
 
+  const simulateTyping = (text: string, callback: () => void) => {
+    setTypingText('');
+    setCurrentTypingIndex(0);
+    setIsTyping(true);
+
+    typingIntervalRef.current = setInterval(() => {
+      setCurrentTypingIndex((prevIndex) => {
+        const nextIndex = prevIndex + 1;
+        setTypingText(text.slice(0, nextIndex));
+        
+        if (nextIndex >= text.length) {
+          if (typingIntervalRef.current) {
+            clearInterval(typingIntervalRef.current);
+          }
+          setIsTyping(false);
+          setTypingText('');
+          callback();
+          return prevIndex;
+        }
+        
+        return nextIndex;
+      });
+    }, 30); // Adjust speed as needed
+  };
+
   const handleSendMessage = async () => {
     if (!inputValue.trim() || !canSend) return;
 
@@ -82,7 +111,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
 
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
-    setIsTyping(true);
 
     // Increment message count
     await incrementCount();
@@ -91,23 +119,26 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       // Generate AI response
       const aiResponse = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
       
-      const aiMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content: aiResponse,
-        sender: 'ai',
-        timestamp: new Date(),
-      };
-      
-      setMessages(prev => [...prev, aiMessage]);
-      setIsTyping(false);
+      // Simulate typing animation
+      simulateTyping(aiResponse, () => {
+        const aiMessage: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          content: aiResponse,
+          sender: 'ai',
+          timestamp: new Date(),
+        };
+        
+        setMessages(prev => [...prev, aiMessage]);
 
-      // Auto-speak the AI response
-      if (!isSpeaking) {
-        handleSpeakMessage(aiResponse);
-      }
+        // Auto-speak the AI response
+        if (!isSpeaking) {
+          handleSpeakMessage(aiResponse);
+        }
+      });
     } catch (error) {
       console.error('Error generating AI response:', error);
       setIsTyping(false);
+      setTypingText('');
       toast.error('Failed to generate response. Please try again.');
     }
   };
@@ -137,15 +168,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      toast.success('Signed out successfully');
-    } catch (error) {
-      toast.error('Error signing out');
     }
   };
 
@@ -179,39 +201,28 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
       
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onBack}
-              className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <h2 className="font-semibold text-slate-800 dark:text-slate-200">AuraTalk</h2>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Mood: {mood}</p>
-              </div>
+      {/* Header with theme controls */}
+      <Header />
+      
+      <div className="relative z-10 container mx-auto px-4 py-24 max-w-4xl">
+        {/* Chat Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">{user?.email}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSignOut}
-              className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full"
-            >
-              <LogOut className="w-4 h-4" />
-            </Button>
+            <div>
+              <h2 className="font-semibold text-slate-800 dark:text-slate-200">AuraTalk</h2>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Mood: {mood}</p>
+            </div>
           </div>
         </div>
 
@@ -258,17 +269,18 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
                 </div>
               ))}
               
+              {/* Typing Animation */}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm text-slate-800 dark:text-slate-200 px-4 py-3 rounded-2xl max-w-xs">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-slate-400 dark:bg-slate-300 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-slate-400 dark:bg-slate-300 rounded-full animate-bounce delay-100"></div>
-                      <div className="w-2 h-2 bg-slate-400 dark:bg-slate-300 rounded-full animate-bounce delay-200"></div>
-                    </div>
+                  <div className="bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm text-slate-800 dark:text-slate-200 px-4 py-3 rounded-2xl max-w-xs lg:max-w-md">
+                    <p className="text-sm">
+                      {typingText}
+                      <span className="animate-pulse">|</span>
+                    </p>
                   </div>
                 </div>
               )}
+              
               <div ref={messagesEndRef} />
             </div>
           </div>
@@ -281,7 +293,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={canSend ? "Type your message here..." : "Daily limit reached..."}
-            disabled={!canSend}
+            disabled={!canSend || isTyping}
             className="flex-1 bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/60 dark:focus:bg-slate-800/60 rounded-xl"
           />
           <Button

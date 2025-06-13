@@ -23,7 +23,7 @@ const Footer = ({ onPrivacyClick, onTermsClick }: FooterProps) => {
           Terms & Conditions
         </button>
         <a 
-          href="mailto:footballarchive29@gmail.com" 
+          href="mailto:auratalkai@gmail.com" 
           className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors underline underline-offset-4"
         >
           Support
