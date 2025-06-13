@@ -15,7 +15,18 @@ export class AIChatService {
   }
 
   async generateResponse(userMessage: string, mode: string, mood: string): Promise<string> {
-    // Simulate API call to AI service (replace with actual AI integration)
+    try {
+      // For now, using mock responses. In production, integrate with OpenAI API
+      const responses = await this.getMockResponse(userMessage, mode, mood);
+      return responses;
+    } catch (error) {
+      console.error('Error generating AI response:', error);
+      return "I'm here to listen and support you. Could you tell me more about what's on your mind?";
+    }
+  }
+
+  private async getMockResponse(userMessage: string, mode: string, mood: string): Promise<string> {
+    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     const responses = {
@@ -23,25 +34,29 @@ export class AIChatService {
         "I hear you. That sounds really important to you.",
         "Thank you for sharing that with me. How does that make you feel?",
         "I'm listening. Tell me more about that.",
-        "That must be significant for you to bring it up."
+        "That must be significant for you to bring it up.",
+        "I can sense the emotion in your words. Please continue."
       ],
       advise: [
         "Here's something that might help: try breaking this down into smaller, manageable steps.",
         "Have you considered looking at this from a different perspective?",
         "One approach could be to focus on what you can control in this situation.",
-        "Sometimes it helps to write down your thoughts to gain clarity."
+        "Sometimes it helps to write down your thoughts to gain clarity.",
+        "Consider taking a step back and asking yourself what advice you'd give a friend in this situation."
       ],
       motivate: [
         "You've got this! Every challenge is an opportunity to grow stronger.",
         "I believe in your ability to handle whatever comes your way!",
         "Remember, you've overcome difficulties before - you have that strength within you.",
-        "Today is a new chance to make progress, no matter how small!"
+        "Today is a new chance to make progress, no matter how small!",
+        "Your resilience shines through. Keep moving forward, one step at a time."
       ],
       divine: [
-        "This touches on something deeper. What does your intuition tell you about this?",
-        "In the grand tapestry of life, every thread has its purpose. What meaning do you find here?",
-        "Sometimes the universe speaks to us through our experiences. What might this be teaching you?",
-        "There's wisdom in this moment. What feels most true to your heart?"
+        "\"Cast all your anxiety on him because he cares for you.\" - 1 Peter 5:7. What comfort does this bring to your heart?",
+        "\"For I know the plans I have for you,\" declares the Lord, \"plans to prosper you and not to harm you, to give you hope and a future.\" - Jeremiah 29:11",
+        "\"The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you; in his love he will no longer rebuke you, but will rejoice over you with singing.\" - Zephaniah 3:17",
+        "\"Come to me, all you who are weary and burdened, and I will give you rest.\" - Matthew 11:28. How might this verse speak to your current situation?",
+        "\"And we know that in all things God works for the good of those who love him, who have been called according to his purpose.\" - Romans 8:28"
       ]
     };
 
@@ -72,7 +87,7 @@ export class AIChatService {
           } else {
             clearInterval(wordInterval);
           }
-        }, 150); // Adjust timing as needed
+        }, 150);
       }
 
       utterance.onend = () => {

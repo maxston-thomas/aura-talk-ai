@@ -5,9 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Send, Sparkles, ArrowLeft, Volume2, VolumeX } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useMessageLimits } from '@/hooks/useMessageLimits';
 import ModeSelector from './ModeSelector';
-import SubscriptionModal from './SubscriptionModal';
 import Header from './Header';
 import { toast } from 'sonner';
 import { aiChatService, ChatMessage } from '@/services/aiChatService';
@@ -19,13 +17,11 @@ interface ChatInterfaceProps {
 
 const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const { user } = useAuth();
-  const { canSend, currentCount, limitReached, incrementCount, resetAfterAd } = useMessageLimits();
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [selectedMode, setSelectedMode] = useState('listen');
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [highlightedWord, setHighlightedWord] = useState<string>('');
   const [typingText, setTypingText] = useState('');
@@ -40,12 +36,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, typingText]);
-
-  useEffect(() => {
-    if (limitReached) {
-      setShowSubscriptionModal(true);
-    }
-  }, [limitReached]);
 
   useEffect(() => {
     // Initialize conversation based on mood and mode
@@ -96,11 +86,11 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
         
         return nextIndex;
       });
-    }, 30); // Adjust speed as needed
+    }, 30);
   };
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || !canSend) return;
+    if (!inputValue.trim()) return;
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -112,14 +102,9 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
 
-    // Increment message count
-    await incrementCount();
-
     try {
-      // Generate AI response
       const aiResponse = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
       
-      // Simulate typing animation
       simulateTyping(aiResponse, () => {
         const aiMessage: ChatMessage = {
           id: (Date.now() + 1).toString(),
@@ -130,7 +115,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
         
         setMessages(prev => [...prev, aiMessage]);
 
-        // Auto-speak the AI response
         if (!isSpeaking) {
           handleSpeakMessage(aiResponse);
         }
@@ -171,17 +155,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     }
   };
 
-  const handleUpgrade = (plan: string) => {
-    toast.success(`Redirecting to ${plan} plan...`);
-    setShowSubscriptionModal(false);
-  };
-
-  const handleWatchAd = () => {
-    toast.success('Ad completed! Your message limit has been reset.');
-    resetAfterAd();
-    setShowSubscriptionModal(false);
-  };
-
   const renderMessageContent = (content: string, isAI: boolean) => {
     if (!isAI || !highlightedWord) return content;
     
@@ -201,52 +174,53 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
       
-      {/* Header with theme controls */}
       <Header />
       
-      <div className="relative z-10 container mx-auto px-4 py-24 max-w-4xl">
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 max-w-4xl">
         {/* Chat Header */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
           <Button
             variant="ghost"
             size="sm"
             onClick={onBack}
-            className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full"
+            className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full p-2"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
             </div>
             <div>
-              <h2 className="font-semibold text-slate-800 dark:text-slate-200">AuraTalk</h2>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Mood: {mood}</p>
+              <h2 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">AuraTalk</h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Mood: {mood}</p>
             </div>
           </div>
         </div>
 
         {/* Mode Selector */}
-        <ModeSelector selectedMode={selectedMode} onModeSelect={setSelectedMode} />
+        <div className="mb-4">
+          <ModeSelector selectedMode={selectedMode} onModeSelect={setSelectedMode} />
+        </div>
 
         {/* Chat Messages */}
-        <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 mb-4 h-[calc(100vh-400px)] overflow-hidden">
-          <div className="p-6 h-full overflow-y-auto">
-            <div className="space-y-4">
+        <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 mb-4 h-[50vh] sm:h-[calc(100vh-400px)] overflow-hidden">
+          <div className="p-3 sm:p-6 h-full overflow-y-auto">
+            <div className="space-y-3 sm:space-y-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className="flex items-start gap-2 max-w-xs lg:max-w-md">
+                  <div className="flex items-start gap-1 sm:gap-2 max-w-[85%] sm:max-w-xs lg:max-w-md">
                     <div
-                      className={`px-4 py-3 rounded-2xl ${
+                      className={`px-3 sm:px-4 py-2 sm:py-3 rounded-2xl ${
                         message.sender === 'user'
                           ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
                           : 'bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm text-slate-800 dark:text-slate-200'
                       }`}
                     >
-                      <p className="text-sm">
+                      <p className="text-xs sm:text-sm leading-relaxed">
                         {renderMessageContent(message.content, message.sender === 'ai')}
                       </p>
                       <p className={`text-xs mt-1 ${
@@ -260,9 +234,9 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleSpeakMessage(message.content)}
-                        className="mt-1 hover:bg-white/30 dark:hover:bg-slate-800/30"
+                        className="mt-1 hover:bg-white/30 dark:hover:bg-slate-800/30 p-1 sm:p-2"
                       >
-                        {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                        {isSpeaking ? <VolumeX className="w-3 h-3 sm:w-4 sm:h-4" /> : <Volume2 className="w-3 h-3 sm:w-4 sm:h-4" />}
                       </Button>
                     )}
                   </div>
@@ -272,8 +246,8 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
               {/* Typing Animation */}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm text-slate-800 dark:text-slate-200 px-4 py-3 rounded-2xl max-w-xs lg:max-w-md">
-                    <p className="text-sm">
+                  <div className="bg-white/60 dark:bg-slate-700/60 backdrop-blur-sm text-slate-800 dark:text-slate-200 px-3 sm:px-4 py-2 sm:py-3 rounded-2xl max-w-[85%] sm:max-w-xs lg:max-w-md">
+                    <p className="text-xs sm:text-sm">
                       {typingText}
                       <span className="animate-pulse">|</span>
                     </p>
@@ -292,33 +266,19 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder={canSend ? "Type your message here..." : "Daily limit reached..."}
-            disabled={!canSend || isTyping}
-            className="flex-1 bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/60 dark:focus:bg-slate-800/60 rounded-xl"
+            placeholder="Type your message here..."
+            disabled={isTyping}
+            className="flex-1 bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/60 dark:focus:bg-slate-800/60 rounded-xl text-sm sm:text-base"
           />
           <Button
             onClick={handleSendMessage}
-            disabled={!inputValue.trim() || !canSend || isTyping}
-            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl px-6"
+            disabled={!inputValue.trim() || isTyping}
+            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl px-4 sm:px-6"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-3 h-3 sm:w-4 sm:h-4" />
           </Button>
         </div>
-        
-        {/* Usage Counter */}
-        <div className="text-center mt-4">
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            💬 {Math.max(0, 10 - currentCount)} conversations remaining today
-          </p>
-        </div>
       </div>
-
-      <SubscriptionModal
-        isOpen={showSubscriptionModal}
-        onClose={() => setShowSubscriptionModal(false)}
-        onUpgrade={handleUpgrade}
-        onWatchAd={handleWatchAd}
-      />
     </div>
   );
 };
