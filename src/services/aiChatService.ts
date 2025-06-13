@@ -16,9 +16,24 @@ export class AIChatService {
 
   async generateResponse(userMessage: string, mode: string, mood: string): Promise<string> {
     try {
-      // For now, using mock responses. In production, integrate with OpenAI API
-      const responses = await this.getMockResponse(userMessage, mode, mood);
-      return responses;
+      const response = await fetch('/functions/v1/chat-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userMessage,
+          mode,
+          mood
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.response || "I'm here to listen and support you. Could you tell me more about what's on your mind?";
     } catch (error) {
       console.error('Error generating AI response:', error);
       return "I'm here to listen and support you. Could you tell me more about what's on your mind?";
