@@ -56,7 +56,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage }
@@ -66,9 +66,22 @@ serve(async (req) => {
       }),
     });
 
+    console.log('OpenAI API response status:', response.status);
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error('OpenAI API error:', response.status, errorText);
+      
+      // Check for specific quota error
+      if (response.status === 429 && errorText.includes('insufficient_quota')) {
+        return new Response(JSON.stringify({ 
+          response: "I'm sorry, but the AI service is currently experiencing quota limitations. Please check your OpenAI billing settings or try again later." 
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
       return new Response(JSON.stringify({ 
         response: "I'm having trouble processing your message right now. Please try again in a moment." 
       }), {
@@ -78,6 +91,18 @@ serve(async (req) => {
     }
 
     const data = await response.json();
+    console.log('OpenAI response data:', data);
+    
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      console.error('Invalid OpenAI response structure:', data);
+      return new Response(JSON.stringify({ 
+        response: "I received an unexpected response format. Please try again." 
+      }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
     const aiResponse = data.choices[0].message.content;
     
     console.log('AI response generated successfully:', aiResponse);
