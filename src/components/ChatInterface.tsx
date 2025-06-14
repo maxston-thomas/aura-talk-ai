@@ -25,6 +25,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const [highlightedWord, setHighlightedWord] = useState<string>('');
   const [typingText, setTypingText] = useState('');
   const [currentTypingIndex, setCurrentTypingIndex] = useState(0);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -114,7 +115,8 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
         
         setMessages(prev => [...prev, aiMessage]);
 
-        if (!isSpeaking) {
+        // Only read aloud if voice reading is enabled!
+        if (voiceEnabled) {
           handleSpeakMessage(aiResponse);
         }
       });
@@ -195,6 +197,22 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Mood: {mood}</p>
             </div>
           </div>
+          {/* Add Voice Reading Toggle */}
+          <div className="ml-auto">
+            <Button
+              variant={voiceEnabled ? "default" : "outline"}
+              size="sm"
+              aria-pressed={voiceEnabled}
+              onClick={() => setVoiceEnabled(v => !v)}
+              className={`rounded-full p-2 ${voiceEnabled
+                ? "bg-gradient-to-r from-blue-400 to-purple-400 text-white"
+                : "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-300 border border-blue-300 dark:border-purple-600"
+              } transition-colors`}
+              title={voiceEnabled ? "Voice reading enabled" : "Voice reading disabled"}
+            >
+              {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </Button>
+          </div>
         </div>
 
         {/* Mode Selector */}
@@ -233,7 +251,10 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleSpeakMessage(message.content)}
-                        className="mt-1 hover:bg-white/30 dark:hover:bg-slate-800/30 p-1 sm:p-2"
+                        className={`mt-1 hover:bg-white/30 dark:hover:bg-slate-800/30 p-1 sm:p-2 ${!voiceEnabled ? "opacity-60 pointer-events-none" : ""}`}
+                        title={voiceEnabled ? "Read this message" : "Voice reading is disabled"}
+                        aria-disabled={!voiceEnabled}
+                        tabIndex={voiceEnabled ? 0 : -1}
                       >
                         {isSpeaking ? <VolumeX className="w-3 h-3 sm:w-4 sm:h-4" /> : <Volume2 className="w-3 h-3 sm:w-4 sm:h-4" />}
                       </Button>
@@ -265,10 +286,10 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Share your thoughts here..."
+            placeholder="Share your thoughts here or share what is on your heart."
             disabled={isTyping}
-            className="flex-1 bg-white/60 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/80 dark:focus:bg-slate-800/90 rounded-xl text-sm sm:text-base py-4 min-h-[52px]"
-            style={{ minHeight: 52 }}
+            className="flex-1 bg-white/60 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/80 dark:focus:bg-slate-800/90 rounded-xl text-sm sm:text-base py-5 min-h-[64px]"
+            style={{ minHeight: 64 }}
           />
           <Button
             onClick={handleSendMessage}
