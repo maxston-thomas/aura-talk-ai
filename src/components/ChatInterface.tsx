@@ -179,7 +179,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
         setTypingText('');
         callback();
       }
-    }, 15); // Faster typing speed
+    }, 25); // Faster typing speed
   };
 
   const cancelTyping = () => {
@@ -212,6 +212,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     abortControllerRef.current = new AbortController();
 
     try {
+      console.log('Sending message to AI service:', { content: userMessage.content, mode: selectedMode, mood });
       const aiResponse = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
       
       if (!abortControllerRef.current?.signal.aborted) {
@@ -291,8 +292,8 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       
       <Header />
       
-      {/* Mode Sidebar with liquid crystal style */}
-      <div className={`fixed top-0 right-0 h-full w-72 sm:w-80 bg-white/10 dark:bg-slate-800/10 backdrop-blur-[40px] border-l border-white/20 dark:border-slate-700/20 z-40 transition-all duration-700 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${showModeSidebar ? 'translate-x-0 shadow-2xl' : 'translate-x-full'}`}>
+      {/* Mode Sidebar with improved liquid crystal style */}
+      <div className={`fixed top-0 right-0 h-full w-72 sm:w-80 bg-white/20 dark:bg-slate-800/20 backdrop-blur-[20px] border-l border-white/30 dark:border-slate-700/30 z-40 transition-all duration-700 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${showModeSidebar ? 'translate-x-0 shadow-2xl' : 'translate-x-full'}`}>
         <div className="p-4 sm:p-6 pt-20 sm:pt-24 h-full">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Modes</h3>
@@ -307,20 +308,19 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           </div>
           
           {/* Vertical Mode Selector */}
-          <div className="space-y-3">
-            <ModeSelector 
-              selectedMode={selectedMode} 
-              onModeSelect={handleModeSelect}
-              disabled={isTyping}
-            />
-          </div>
+          <ModeSelector 
+            selectedMode={selectedMode} 
+            onModeSelect={handleModeSelect}
+            disabled={isTyping}
+            layout="vertical"
+          />
         </div>
       </div>
 
-      {/* Overlay */}
+      {/* Overlay with reduced opacity */}
       {showModeSidebar && (
         <div 
-          className="fixed inset-0 bg-black/10 backdrop-blur-sm z-30 transition-all duration-700"
+          className="fixed inset-0 bg-black/5 backdrop-blur-sm z-30 transition-all duration-700"
           onClick={() => setShowModeSidebar(false)}
         />
       )}
@@ -347,7 +347,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             </div>
           </div>
           
-          {/* Mode Button - Smaller on mobile */}
+          {/* Modes Button */}
           <Button
             onClick={() => setShowModeSidebar(true)}
             variant="ghost"
@@ -355,19 +355,18 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
           >
             <Settings className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-            <span className="hidden sm:inline">Modes</span>
-            <span className="sm:hidden">Mode</span>
+            <span>Modes</span>
           </Button>
           
-          {/* Support Us Button - Much smaller on mobile */}
+          {/* Support Us Button - Smaller on mobile */}
           <div className="ml-auto">
             <Button
               onClick={() => setShowSupportSection(!showSupportSection)}
               variant="ghost"
               size="sm"
-              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
+              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-2 sm:px-4 py-1 sm:py-3 text-xs sm:text-base"
             >
-              <Gift className="w-3 h-3 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+              <Gift className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Support Us</span>
               <span className="sm:hidden">Help</span>
             </Button>
