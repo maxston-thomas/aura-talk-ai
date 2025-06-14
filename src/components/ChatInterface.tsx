@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, ArrowLeft } from 'lucide-react';
+import { Send, Sparkles, ArrowLeft, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ModeSelector from './ModeSelector';
 import Header from './Header';
@@ -128,6 +128,12 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     }
   };
 
+  const handleModeSelect = (mode: string) => {
+    if (!isTyping) {
+      setSelectedMode(mode);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
       {/* Background Effects */}
@@ -160,7 +166,11 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
 
         {/* Mode Selector */}
         <div className="mb-4">
-          <ModeSelector selectedMode={selectedMode} onModeSelect={setSelectedMode} />
+          <ModeSelector 
+            selectedMode={selectedMode} 
+            onModeSelect={handleModeSelect}
+            disabled={isTyping}
+          />
         </div>
 
         {/* Chat Messages */}
@@ -209,6 +219,16 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             </div>
           </div>
         </Card>
+
+        {/* Loading Indicator */}
+        {isTyping && (
+          <div className="flex justify-center items-center mb-3">
+            <div className="flex items-center gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/30 dark:border-slate-700/30 rounded-full px-4 py-2">
+              <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+              <span className="text-sm text-slate-600 dark:text-slate-400">AI is thinking...</span>
+            </div>
+          </div>
+        )}
 
         {/* Input Area */}
         <div className="flex gap-2 items-end">

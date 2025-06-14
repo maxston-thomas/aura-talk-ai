@@ -7,9 +7,10 @@ import { Ear, Lightbulb, Zap, Sparkles } from 'lucide-react';
 interface ModeSelectorProps {
   selectedMode: string;
   onModeSelect: (mode: string) => void;
+  disabled?: boolean;
 }
 
-const ModeSelector = ({ selectedMode, onModeSelect }: ModeSelectorProps) => {
+const ModeSelector = ({ selectedMode, onModeSelect, disabled = false }: ModeSelectorProps) => {
   const modes = [
     {
       id: 'listen',
@@ -51,15 +52,17 @@ const ModeSelector = ({ selectedMode, onModeSelect }: ModeSelectorProps) => {
             <Button
               key={mode.id}
               variant={isSelected ? "default" : "outline"}
-              onClick={() => onModeSelect(mode.id)}
+              onClick={() => !disabled && onModeSelect(mode.id)}
+              disabled={disabled}
               className={`h-auto px-3 py-3 flex flex-col items-center gap-2 transition-all duration-200 
                 ${isSelected 
                   ? `scale-90 bg-gradient-to-r ${mode.gradient} text-white border-none` 
                   : 'scale-100 bg-white/60 backdrop-blur-sm border-white/30 hover:bg-white/80'}
-                hover:scale-105 focus:scale-100`}
+                ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 focus:scale-100'}
+                ${disabled ? '' : 'cursor-pointer'}`}
               style={{ minHeight: 60, minWidth: 0 }}
-              onMouseEnter={e => { if(isSelected) e.currentTarget.style.transform = "scale(1.0)" }}
-              onMouseLeave={e => { if(isSelected) e.currentTarget.style.transform = "scale(0.9)" }}
+              onMouseEnter={e => { if(isSelected && !disabled) e.currentTarget.style.transform = "scale(1.0)" }}
+              onMouseLeave={e => { if(isSelected && !disabled) e.currentTarget.style.transform = "scale(0.9)" }}
             >
               <IconComponent className="w-5 h-5" />
               <div className="font-medium text-sm">{mode.name}</div>
