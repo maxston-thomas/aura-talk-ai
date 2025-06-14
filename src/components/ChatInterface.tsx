@@ -1,8 +1,9 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, ArrowLeft, Volume2, VolumeX } from 'lucide-react';
+import { Send, Sparkles, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ModeSelector from './ModeSelector';
 import Header from './Header';
@@ -21,11 +22,8 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [selectedMode, setSelectedMode] = useState('listen');
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [highlightedWord, setHighlightedWord] = useState<string>('');
   const [typingText, setTypingText] = useState('');
   const [currentTypingIndex, setCurrentTypingIndex] = useState(0);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -114,11 +112,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
         };
         
         setMessages(prev => [...prev, aiMessage]);
-
-        // Only read aloud if voice reading is enabled!
-        if (voiceEnabled) {
-          handleSpeakMessage(aiResponse);
-        }
       });
     } catch (error) {
       console.error('Error generating AI response:', error);
@@ -128,45 +121,11 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     }
   };
 
-  const handleSpeakMessage = async (text: string) => {
-    if (isSpeaking) {
-      aiChatService.stopSpeaking();
-      setIsSpeaking(false);
-      setHighlightedWord('');
-      return;
-    }
-
-    setIsSpeaking(true);
-    try {
-      await aiChatService.speakText(text, (word) => {
-        setHighlightedWord(word);
-      });
-    } catch (error) {
-      console.error('Error speaking text:', error);
-    } finally {
-      setIsSpeaking(false);
-      setHighlightedWord('');
-    }
-  };
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
-  };
-
-  const renderMessageContent = (content: string, isAI: boolean) => {
-    if (!isAI || !highlightedWord) return content;
-    
-    return content.split(' ').map((word, index) => (
-      <span
-        key={index}
-        className={word === highlightedWord ? 'bg-yellow-200 dark:bg-yellow-800' : ''}
-      >
-        {word}{' '}
-      </span>
-    ));
   };
 
   return (
@@ -197,22 +156,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Mood: {mood}</p>
             </div>
           </div>
-          {/* Add Voice Reading Toggle */}
-          <div className="ml-auto">
-            <Button
-              variant={voiceEnabled ? "default" : "outline"}
-              size="sm"
-              aria-pressed={voiceEnabled}
-              onClick={() => setVoiceEnabled(v => !v)}
-              className={`rounded-full p-2 ${voiceEnabled
-                ? "bg-gradient-to-r from-blue-400 to-purple-400 text-white"
-                : "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-300 border border-blue-300 dark:border-purple-600"
-              } transition-colors`}
-              title={voiceEnabled ? "Voice reading enabled" : "Voice reading disabled"}
-            >
-              {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </Button>
-          </div>
         </div>
 
         {/* Mode Selector */}
@@ -238,7 +181,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
                       }`}
                     >
                       <p className="text-xs sm:text-sm leading-relaxed">
-                        {renderMessageContent(message.content, message.sender === 'ai')}
+                        {message.content}
                       </p>
                       <p className={`text-xs mt-1 ${
                         message.sender === 'user' ? 'text-blue-100' : 'text-slate-500 dark:text-slate-300'
@@ -246,19 +189,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
-                    {message.sender === 'ai' && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleSpeakMessage(message.content)}
-                        className={`mt-1 hover:bg-white/30 dark:hover:bg-slate-800/30 p-1 sm:p-2 ${!voiceEnabled ? "opacity-60 pointer-events-none" : ""}`}
-                        title={voiceEnabled ? "Read this message" : "Voice reading is disabled"}
-                        aria-disabled={!voiceEnabled}
-                        tabIndex={voiceEnabled ? 0 : -1}
-                      >
-                        {isSpeaking ? <VolumeX className="w-3 h-3 sm:w-4 sm:h-4" /> : <Volume2 className="w-3 h-3 sm:w-4 sm:h-4" />}
-                      </Button>
-                    )}
                   </div>
                 </div>
               ))}
