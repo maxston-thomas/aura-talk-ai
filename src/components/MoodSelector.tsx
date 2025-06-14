@@ -18,7 +18,7 @@ const MoodSelector = ({ onMoodSelect, onMoodHover }: MoodSelectorProps) => {
       icon: Smile,
       gradient: 'from-green-400 to-emerald-500',
       bgGradient: 'from-green-50 to-emerald-50',
-      hoverBg: 'hover:bg-green-100/60 dark:hover:bg-green-900/30'
+      hoverBg: 'mood-pleasant'
     },
     {
       id: 'unpleasant',
@@ -27,7 +27,7 @@ const MoodSelector = ({ onMoodSelect, onMoodHover }: MoodSelectorProps) => {
       icon: Frown,
       gradient: 'from-orange-400 to-red-500',
       bgGradient: 'from-orange-50 to-red-50',
-      hoverBg: 'hover:bg-orange-100/60 dark:hover:bg-orange-900/30'
+      hoverBg: 'mood-unpleasant'
     },
     {
       id: 'calm',
@@ -36,9 +36,22 @@ const MoodSelector = ({ onMoodSelect, onMoodHover }: MoodSelectorProps) => {
       icon: Heart,
       gradient: 'from-blue-400 to-indigo-500',
       bgGradient: 'from-blue-50 to-indigo-50',
-      hoverBg: 'hover:bg-blue-100/60 dark:hover:bg-blue-900/30'
+      hoverBg: 'mood-calm'
     }
   ];
+
+  const handleMoodHover = (mood: string | null) => {
+    // Remove all mood hover classes from body
+    document.body.classList.remove('mood-pleasant-hover', 'mood-calm-hover', 'mood-unpleasant-hover');
+    
+    // Add specific mood hover class if hovering
+    if (mood === 'pleasant' || mood === 'calm') {
+      document.body.classList.add(`mood-${mood}-hover`);
+    }
+    
+    // Call parent hover handler
+    onMoodHover?.(mood);
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -57,10 +70,10 @@ const MoodSelector = ({ onMoodSelect, onMoodHover }: MoodSelectorProps) => {
           return (
             <Card
               key={mood.id}
-              className={`group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/30 ${mood.hoverBg}`}
+              className={`group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border-white/30 dark:border-slate-700/30 hover:${mood.hoverBg}`}
               onClick={() => onMoodSelect(mood.id)}
-              onMouseEnter={() => onMoodHover?.(mood.id)}
-              onMouseLeave={() => onMoodHover?.(null)}
+              onMouseEnter={() => handleMoodHover(mood.id)}
+              onMouseLeave={() => handleMoodHover(null)}
             >
               <div className={`p-6 text-center bg-gradient-to-br ${mood.bgGradient} dark:from-slate-800 dark:to-slate-700 rounded-lg transition-colors duration-300`}>
                 <div className={`w-16 h-16 bg-gradient-to-r ${mood.gradient} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
