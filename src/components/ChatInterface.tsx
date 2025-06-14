@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,13 +30,34 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [hasUserTyped, setHasUserTyped] = useState(false);
   const [showModeSidebar, setShowModeSidebar] = useState(false);
-  const [chatAttemptCount, setChatAttemptCount] = useState(0);
   const [showFloatingSupportPanel, setShowFloatingSupportPanel] = useState(false);
+  const [hasShownSupportPanel, setHasShownSupportPanel] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Check if support panel should be shown based on first-time chat and 3-day cooldown
+  useEffect(() => {
+    const checkSupportPanelDisplay = () => {
+      const lastShownKey = `supportPanel_lastShown_${user?.id}`;
+      const lastShown = localStorage.getItem(lastShownKey);
+      const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000); // 3 days in milliseconds
+      
+      if (!lastShown || parseInt(lastShown) < threeDaysAgo) {
+        // Show support panel for first-time users or after 3-day cooldown
+        setShowFloatingSupportPanel(true);
+        setHasShownSupportPanel(true);
+        localStorage.setItem(lastShownKey, Date.now().toString());
+      }
+    };
+
+    // Only check on component mount for first-time display
+    if (user && !hasShownSupportPanel) {
+      checkSupportPanelDisplay();
+    }
+  }, [user, hasShownSupportPanel]);
 
   // Placeholder animation with proper cleanup
   useEffect(() => {
@@ -200,14 +222,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
-
-    // Increment chat attempt count and check if we should show support panel
-    const newCount = chatAttemptCount + 1;
-    setChatAttemptCount(newCount);
-    
-    if (newCount % 5 === 0) {
-      setShowFloatingSupportPanel(true);
-    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
