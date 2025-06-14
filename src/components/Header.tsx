@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -23,7 +22,7 @@ const Header = () => {
     setCurrentTheme(themeId);
     setShowThemeDropdown(false);
     document.documentElement.setAttribute('data-theme', themeId);
-    
+
     // Apply theme colors to CSS variables
     const themeColors = {
       blue: { primary: '59 130 246', secondary: '147 51 234', accent: '236 72 153' },
@@ -31,11 +30,15 @@ const Header = () => {
       purple: { primary: '147 51 234', secondary: '236 72 153', accent: '99 102 241' },
       orange: { primary: '251 146 60', secondary: '239 68 68', accent: '236 72 153' }
     };
-    
+
     const colors = themeColors[themeId as keyof typeof themeColors];
     document.documentElement.style.setProperty('--theme-primary', colors.primary);
     document.documentElement.style.setProperty('--theme-secondary', colors.secondary);
     document.documentElement.style.setProperty('--theme-accent', colors.accent);
+
+    // Force trigger background update for body by toggling a data attr
+    // (background updates handled in index.css based on [data-theme])
+    document.body.setAttribute('data-bg-theme', themeId);
   };
 
   const toggleDarkMode = () => {

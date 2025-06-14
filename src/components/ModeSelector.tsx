@@ -43,29 +43,32 @@ const ModeSelector = ({ selectedMode, onModeSelect }: ModeSelectorProps) => {
 
   return (
     <div className="mb-6">
-      <h3 className="text-lg font-semibold text-slate-800 mb-4 text-center">
+      <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4 text-center">
         Choose your conversation mode
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {modes.map((mode) => {
           const IconComponent = mode.icon;
           const isSelected = selectedMode === mode.id;
-          
+
           return (
             <Button
               key={mode.id}
               variant={isSelected ? "default" : "outline"}
               onClick={() => onModeSelect(mode.id)}
-              className={`h-auto p-4 flex flex-col items-center gap-2 transition-all duration-300 ${
-                isSelected 
-                  ? `bg-gradient-to-r ${mode.gradient} text-white border-none hover:scale-105` 
-                  : 'bg-white/60 backdrop-blur-sm border-white/30 hover:bg-white/80 hover:scale-105'
-              }`}
+              className={`h-auto px-3 py-3 flex flex-col items-center gap-2 transition-all duration-200 
+                ${isSelected 
+                  ? `scale-90 bg-gradient-to-r ${mode.gradient} text-white border-none` 
+                  : 'scale-100 bg-white/60 backdrop-blur-sm border-white/30 hover:bg-white/80'}
+                hover:scale-105 focus:scale-100`}
+              style={{ minHeight: 80, minWidth: 0 }}
+              onMouseEnter={e => { if(isSelected) e.currentTarget.style.transform = "scale(1.0)" }}
+              onMouseLeave={e => { if(isSelected) e.currentTarget.style.transform = "scale(0.9)" }}
             >
               <IconComponent className="w-5 h-5" />
               <div className="text-center">
                 <div className="font-medium text-sm">{mode.name}</div>
-                <div className={`text-xs mt-1 ${isSelected ? 'text-white/80' : 'text-slate-500'}`}>
+                <div className={`text-xs mt-1 ${isSelected ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'}`}>
                   {mode.description}
                 </div>
               </div>
