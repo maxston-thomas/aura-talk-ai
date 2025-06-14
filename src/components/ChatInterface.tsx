@@ -31,13 +31,15 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const placeholderIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Placeholder animation
+  // Placeholder animation with proper cleanup
   useEffect(() => {
     if (isInputFocused || hasUserTyped || inputValue.length > 0) {
-      if (placeholderIntervalRef.current) {
-        clearInterval(placeholderIntervalRef.current);
+      // Clear any existing timeout
+      if (placeholderTimeoutRef.current) {
+        clearTimeout(placeholderTimeoutRef.current);
+        placeholderTimeoutRef.current = null;
       }
       setPlaceholderText('Share your thoughts here or share what is on your heart.');
       return;
@@ -57,41 +59,60 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       const currentPhrase = phrases[currentPhraseIndex];
       
       if (!isDeleting) {
+        // Typing phase
         currentText = currentPhrase.substring(0, currentCharIndex + 1);
         currentCharIndex++;
         
         if (currentCharIndex === currentPhrase.length) {
+          // Finished typing current phrase, start deleting after pause
           isDeleting = true;
-          setTimeout(() => {
-            placeholderIntervalRef.current = setInterval(typeEffect, 50);
-          }, 2000);
+          placeholderTimeoutRef.current = setTimeout(() => {
+            typeEffect();
+          }, 2000); // Pause before deleting
+          setPlaceholderText(currentText);
           return;
         }
       } else {
+        // Deleting phase
         currentText = currentPhrase.substring(0, currentCharIndex - 1);
         currentCharIndex--;
         
         if (currentCharIndex === 0) {
+          // Finished deleting, move to next phrase
           isDeleting = false;
           currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
-          setTimeout(() => {
-            placeholderIntervalRef.current = setInterval(typeEffect, 100);
-          }, 500);
+          placeholderTimeoutRef.current = setTimeout(() => {
+            typeEffect();
+          }, 500); // Brief pause before typing next phrase
+          setPlaceholderText(currentText);
           return;
         }
       }
       
       setPlaceholderText(currentText);
+      
+      // Continue the animation with consistent timing
+      const speed = isDeleting ? 50 : 100; // Faster deletion, slower typing
+      placeholderTimeoutRef.current = setTimeout(() => {
+        typeEffect();
+      }, speed);
     };
 
-    placeholderIntervalRef.current = setInterval(typeEffect, 100);
+    // Start the animation
+    placeholderTimeoutRef.current = setTimeout(() => {
+      typeEffect();
+    }, 100);
 
+    // Cleanup function
     return () => {
-      if (placeholderIntervalRef.current) {
-        clearInterval(placeholderIntervalRef.current);
+      if (placeholderTimeoutRef.current) {
+        clearTimeout(placeholderTimeoutRef.current);
+        placeholderTimeoutRef.current = null;
       }
     };
   }, [isInputFocused, hasUserTyped, inputValue]);
+
+  // ... keep existing code (scrollToBottom function and useEffect for scrolling)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -100,6 +121,8 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, typingText]);
+
+  // ... keep existing code (useEffect for initial message)
 
   useEffect(() => {
     // Initialize conversation based on mood and mode
@@ -129,29 +152,35 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   }, [mood, selectedMode]);
 
   const simulateTyping = (text: string, callback: () => void) => {
+    // Clear any existing typing interval
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+    }
+    
     setTypingText('');
     setCurrentTypingIndex(0);
     setIsTyping(true);
 
+    let currentIndex = 0;
+    
     typingIntervalRef.current = setInterval(() => {
-      setCurrentTypingIndex((prevIndex) => {
-        const nextIndex = prevIndex + 1;
-        setTypingText(text.slice(0, nextIndex));
-        
-        if (nextIndex >= text.length) {
-          if (typingIntervalRef.current) {
-            clearInterval(typingIntervalRef.current);
-          }
-          setIsTyping(false);
-          setTypingText('');
-          callback();
-          return prevIndex;
+      currentIndex++;
+      setTypingText(text.slice(0, currentIndex));
+      
+      if (currentIndex >= text.length) {
+        if (typingIntervalRef.current) {
+          clearInterval(typingIntervalRef.current);
+          typingIntervalRef.current = null;
         }
-        
-        return nextIndex;
-      });
+        setIsTyping(false);
+        setTypingText('');
+        callback();
+      }
     }, 30);
   };
+
+  // ... keep existing code (handleSendMessage, handleKeyPress functions)
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -217,6 +246,18 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       setSelectedMode(mode);
     }
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (typingIntervalRef.current) {
+        clearInterval(typingIntervalRef.current);
+      }
+      if (placeholderTimeoutRef.current) {
+        clearTimeout(placeholderTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden flex flex-col">
