@@ -9,6 +9,41 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Fallback responses for when OpenAI is not available
+const getFallbackResponse = (mode: string, mood: string, userMessage: string): string => {
+  const responses = {
+    listen: [
+      "I hear you. That sounds really important to you.",
+      "Thank you for sharing that with me. How are you feeling about it?",
+      "I'm listening. Tell me more about what's on your mind.",
+      "That sounds significant. What's been the hardest part about this?"
+    ],
+    advise: [
+      "Based on what you've shared, here's something to consider: take it one step at a time.",
+      "Sometimes the best approach is to start small. What's one thing you could try today?",
+      "It might help to write down your thoughts or talk to someone you trust.",
+      "Consider taking a moment to breathe and think about what matters most to you right now."
+    ],
+    motivate: [
+      "You've got this! Every challenge is an opportunity to grow stronger.",
+      "I believe in your ability to handle whatever comes your way!",
+      "You're more resilient than you realize. Keep pushing forward!",
+      "Every step forward, no matter how small, is progress worth celebrating!"
+    ],
+    divine: [
+      "Consider this verse: 'Be still and know that I am God.' - Psalm 46:10",
+      "Remember: 'For I know the plans I have for you, declares the Lord.' - Jeremiah 29:11",
+      "Trust in the Lord with all your heart and lean not on your own understanding. - Proverbs 3:5",
+      "God is with you in this moment. His love and guidance are always available."
+    ]
+  };
+
+  const modeResponses = responses[mode as keyof typeof responses] || responses.listen;
+  const randomResponse = modeResponses[Math.floor(Math.random() * modeResponses.length)];
+  
+  return randomResponse;
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -18,18 +53,19 @@ serve(async (req) => {
   try {
     console.log('Chat AI function called');
     
+    const { userMessage, mode, mood } = await req.json();
+    console.log('Request data:', { userMessage, mode, mood });
+
+    // If no OpenAI API key, return fallback response
     if (!openAIApiKey) {
-      console.error('OpenAI API key not found');
-      return new Response(JSON.stringify({ 
-        response: "I'm having trouble connecting to my AI service right now. Please try again later." 
-      }), {
+      console.log('No OpenAI API key found, using fallback response');
+      const fallbackResponse = getFallbackResponse(mode || 'listen', mood || 'calm', userMessage);
+      
+      return new Response(JSON.stringify({ response: fallbackResponse }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-
-    const { userMessage, mode, mood } = await req.json();
-    console.log('Request data:', { userMessage, mode, mood });
 
     // Define system prompts based on mode
     const systemPrompts = {
@@ -46,7 +82,7 @@ serve(async (req) => {
       calm: "The user is in a peaceful state. Help maintain their tranquility while being ready to explore meaningful topics."
     };
 
-    const systemPrompt = `${systemPrompts[mode as keyof typeof systemPrompts]} ${moodContext[mood as keyof typeof moodContext]} Keep responses conversational, natural, and under 150 words.`;
+    const systemPrompt = `${systemPrompts[mode as keyof typeof systemPrompts]} ${moodContext[mood as keyof typeof moodContext]} Keep responses conversational, natural, and under 80 words.`;
 
     console.log('Calling OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -61,7 +97,7 @@ serve(async (req) => {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage }
         ],
-        max_tokens: 200,
+        max_tokens: 120,
         temperature: 0.7,
       }),
     });
@@ -72,19 +108,10 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('OpenAI API error:', response.status, errorText);
       
-      // Check for specific quota error
-      if (response.status === 429 && errorText.includes('insufficient_quota')) {
-        return new Response(JSON.stringify({ 
-          response: "I'm sorry, but the AI service is currently experiencing quota limitations. Please check your OpenAI billing settings or try again later." 
-        }), {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
+      // Return fallback response instead of error
+      const fallbackResponse = getFallbackResponse(mode || 'listen', mood || 'calm', userMessage);
       
-      return new Response(JSON.stringify({ 
-        response: "I'm having trouble processing your message right now. Please try again in a moment." 
-      }), {
+      return new Response(JSON.stringify({ response: fallbackResponse }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -95,9 +122,11 @@ serve(async (req) => {
     
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       console.error('Invalid OpenAI response structure:', data);
-      return new Response(JSON.stringify({ 
-        response: "I received an unexpected response format. Please try again." 
-      }), {
+      
+      // Return fallback response
+      const fallbackResponse = getFallbackResponse(mode || 'listen', mood || 'calm', userMessage);
+      
+      return new Response(JSON.stringify({ response: fallbackResponse }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -111,9 +140,11 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in chat-ai function:', error);
-    return new Response(JSON.stringify({ 
-      response: "I apologize, but I'm experiencing some technical difficulties. Please try sending your message again." 
-    }), {
+    
+    // Return fallback response instead of error
+    const fallbackResponse = getFallbackResponse('listen', 'calm', 'Hello');
+    
+    return new Response(JSON.stringify({ response: fallbackResponse }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
