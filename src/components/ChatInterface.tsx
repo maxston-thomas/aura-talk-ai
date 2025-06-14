@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -26,8 +25,73 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const [typingText, setTypingText] = useState('');
   const [currentTypingIndex, setCurrentTypingIndex] = useState(0);
   const [showSupportSection, setShowSupportSection] = useState(false);
+  const [placeholderText, setPlaceholderText] = useState('Share your thoughts here');
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [hasUserTyped, setHasUserTyped] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const placeholderIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Placeholder animation
+  useEffect(() => {
+    if (isInputFocused || hasUserTyped || inputValue.length > 0) {
+      if (placeholderIntervalRef.current) {
+        clearInterval(placeholderIntervalRef.current);
+      }
+      setPlaceholderText('Share your thoughts here or share what is on your heart.');
+      return;
+    }
+
+    const phrases = [
+      'Share your thoughts here',
+      'or share what is on your heart.'
+    ];
+    
+    let currentPhraseIndex = 0;
+    let currentCharIndex = 0;
+    let isDeleting = false;
+    let currentText = '';
+
+    const typeEffect = () => {
+      const currentPhrase = phrases[currentPhraseIndex];
+      
+      if (!isDeleting) {
+        currentText = currentPhrase.substring(0, currentCharIndex + 1);
+        currentCharIndex++;
+        
+        if (currentCharIndex === currentPhrase.length) {
+          isDeleting = true;
+          setTimeout(() => {
+            placeholderIntervalRef.current = setInterval(typeEffect, 50);
+          }, 2000);
+          return;
+        }
+      } else {
+        currentText = currentPhrase.substring(0, currentCharIndex - 1);
+        currentCharIndex--;
+        
+        if (currentCharIndex === 0) {
+          isDeleting = false;
+          currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+          setTimeout(() => {
+            placeholderIntervalRef.current = setInterval(typeEffect, 100);
+          }, 500);
+          return;
+        }
+      }
+      
+      setPlaceholderText(currentText);
+    };
+
+    placeholderIntervalRef.current = setInterval(typeEffect, 100);
+
+    return () => {
+      if (placeholderIntervalRef.current) {
+        clearInterval(placeholderIntervalRef.current);
+      }
+    };
+  }, [isInputFocused, hasUserTyped, inputValue]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -130,6 +194,24 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    if (e.target.value.length > 0 && !hasUserTyped) {
+      setHasUserTyped(true);
+    }
+  };
+
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
+    if (inputValue.length === 0) {
+      setHasUserTyped(false);
+    }
+  };
+
   const handleModeSelect = (mode: string) => {
     if (!isTyping) {
       setSelectedMode(mode);
@@ -137,14 +219,14 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden flex flex-col">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20"></div>
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
       
       <Header />
       
-      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 max-w-4xl">
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-6 max-w-4xl flex-1 flex flex-col">
         {/* Chat Header */}
         <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
           <Button
@@ -194,8 +276,8 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           />
         </div>
 
-        {/* Chat Messages */}
-        <Card className="bg-white/40 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/40 mb-4 h-[54vh] sm:h-[calc(100vh-400px)] overflow-hidden shadow-md">
+        {/* Chat Messages - Now takes remaining space */}
+        <Card className="bg-white/40 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/40 mb-4 flex-1 overflow-hidden shadow-md">
           <div className="p-3 sm:p-6 h-full overflow-y-auto">
             <div className="space-y-3 sm:space-y-4">
               {messages.map((message) => (
@@ -251,13 +333,15 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           </div>
         )}
 
-        {/* Input Area */}
+        {/* Input Area - Now at the bottom */}
         <div className="flex gap-2 items-end">
           <Input
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={handleInputChange}
             onKeyPress={handleKeyPress}
-            placeholder="Share your thoughts here or share what is on your heart."
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            placeholder={placeholderText}
             disabled={isTyping}
             className="flex-1 bg-white/60 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/80 dark:focus:bg-slate-800/90 rounded-xl text-sm sm:text-base py-5 min-h-[64px]"
             style={{ minHeight: 64 }}
