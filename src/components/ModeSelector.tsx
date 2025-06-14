@@ -8,9 +8,10 @@ interface ModeSelectorProps {
   selectedMode: string;
   onModeSelect: (mode: string) => void;
   disabled?: boolean;
+  layout?: 'grid' | 'vertical';
 }
 
-const ModeSelector = ({ selectedMode, onModeSelect, disabled = false }: ModeSelectorProps) => {
+const ModeSelector = ({ selectedMode, onModeSelect, disabled = false, layout = 'grid' }: ModeSelectorProps) => {
   const modes = [
     {
       id: 'listen',
@@ -37,6 +38,34 @@ const ModeSelector = ({ selectedMode, onModeSelect, disabled = false }: ModeSele
       gradient: 'from-indigo-400 to-purple-600'
     }
   ];
+
+  if (layout === 'vertical') {
+    return (
+      <div className="space-y-3">
+        {modes.map((mode) => {
+          const IconComponent = mode.icon;
+          const isSelected = selectedMode === mode.id;
+
+          return (
+            <Button
+              key={mode.id}
+              variant={isSelected ? "default" : "outline"}
+              onClick={() => !disabled && onModeSelect(mode.id)}
+              disabled={disabled}
+              className={`w-full h-auto px-4 py-4 flex items-center gap-3 transition-all duration-300 justify-start
+                ${isSelected 
+                  ? `bg-gradient-to-r ${mode.gradient} text-white border-none shadow-lg` 
+                  : 'bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60'}
+                ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 cursor-pointer'}`}
+            >
+              <IconComponent className="w-5 h-5 flex-shrink-0" />
+              <div className="font-medium text-sm">{mode.name}</div>
+            </Button>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className="mb-6">

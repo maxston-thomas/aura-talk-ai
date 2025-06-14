@@ -84,7 +84,7 @@ function AppContent() {
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
         
         {/* Content with padding to avoid header collision */}
-        <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 pt-24">
+        <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 pt-24 min-h-screen flex flex-col">
           <div className="text-center mb-8 sm:mb-12">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
@@ -97,26 +97,33 @@ function AppContent() {
             </p>
           </div>
 
-          <MoodSelector 
-            onMoodSelect={handleMoodSelect} 
-            onMoodHover={setHoveredMood}
-          />
+          <div className="flex-1">
+            <MoodSelector 
+              onMoodSelect={handleMoodSelect} 
+              onMoodHover={setHoveredMood}
+            />
+          </div>
 
-          {/* Support Section - Made button bigger */}
-          <div className="mt-12 sm:mt-16 text-center">
+          {/* Support Section - Properly spaced */}
+          <div className="mt-12 sm:mt-16 mb-8 sm:mb-12 text-center">
             <Button
               onClick={() => setShowSupportSection(!showSupportSection)}
               variant="ghost"
-              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-6 sm:px-8 py-3 sm:py-4 text-base"
+              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 sm:px-8 py-2 sm:py-4 text-sm sm:text-base"
             >
-              <Gift className="w-5 h-5 mr-2" />
+              <Gift className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Support Us
             </Button>
           </div>
 
-          {showSupportSection && <SupportSection />}
+          {showSupportSection && (
+            <div className="mb-8 sm:mb-12">
+              <SupportSection />
+            </div>
+          )}
           
-          <div className="mt-12 sm:mt-16">
+          {/* Footer with proper spacing */}
+          <div className="mt-auto pt-8 sm:pt-12">
             <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
           </div>
         </div>
@@ -131,7 +138,7 @@ function AppContent() {
       <div className="absolute top-1/4 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/4 left-1/4 w-48 sm:w-64 h-48 sm:h-64 bg-gradient-to-r from-pink-400/20 to-blue-400/20 dark:from-pink-600/30 dark:to-blue-600/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
       
-      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-8 sm:py-12">
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-8 sm:py-12 min-h-screen flex flex-col">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 animate-pulse">
@@ -176,103 +183,108 @@ function AppContent() {
           </p>
         </div>
 
-        {/* Mood Selector */}
-        <MoodSelector 
-          onMoodSelect={handleMoodSelect} 
-          onMoodHover={setHoveredMood}
-        />
+        <div className="flex-1">
+          {/* Mood Selector */}
+          <MoodSelector 
+            onMoodSelect={handleMoodSelect} 
+            onMoodHover={setHoveredMood}
+          />
 
-        {/* Conversation Modes Section */}
-        <div className="mt-12 sm:mt-16 max-w-6xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-200 mb-8">
-            Choose Your Conversation Style
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Ear className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Just Listen</h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                Pure listening without judgment or advice
+          {/* Conversation Modes Section */}
+          <div className="mt-12 sm:mt-16 max-w-6xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-200 mb-8">
+              Choose Your Conversation Style
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <Ear className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Just Listen</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                  Pure listening without judgment or advice
+                </p>
+              </Card>
+
+              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Advise</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                  Gentle guidance and practical solutions
+                </p>
+              </Card>
+
+              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Motivate</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                  Energetic encouragement and positivity
+                </p>
+              </Card>
+
+              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </div>
+                <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Divine</h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                  Spiritual and philosophical conversations
+                </p>
+              </Card>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16 mt-12 sm:mt-16">
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+              <Brain className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500 mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">AI Emotional Intelligence</h3>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+                Advanced AI that understands and responds to your emotional state with empathy and care.
               </p>
             </Card>
 
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Advise</h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                Gentle guidance and practical solutions
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+              <Lock className="w-8 h-8 sm:w-12 sm:h-12 text-green-500 mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Zero Data Storage</h3>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+                Your conversations are never saved or stored. Complete privacy and confidentiality guaranteed.
               </p>
             </Card>
 
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Motivate</h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                Energetic encouragement and positivity
-              </p>
-            </Card>
-
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Divine</h3>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                Spiritual and philosophical conversations
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105 sm:col-span-2 lg:col-span-1">
+              <Smile className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500 mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Mood-Adaptive Responses</h3>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+                Personalized conversations that adapt to your current emotional state and needs.
               </p>
             </Card>
           </div>
         </div>
 
-        {/* Enhanced Features */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16 mt-12 sm:mt-16">
-          <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-            <Brain className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500 mx-auto mb-3 sm:mb-4" />
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">AI Emotional Intelligence</h3>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              Advanced AI that understands and responds to your emotional state with empathy and care.
-            </p>
-          </Card>
-
-          <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-            <Lock className="w-8 h-8 sm:w-12 sm:h-12 text-green-500 mx-auto mb-3 sm:mb-4" />
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Zero Data Storage</h3>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              Your conversations are never saved or stored. Complete privacy and confidentiality guaranteed.
-            </p>
-          </Card>
-
-          <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105 sm:col-span-2 lg:col-span-1">
-            <Smile className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500 mx-auto mb-3 sm:mb-4" />
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Mood-Adaptive Responses</h3>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              Personalized conversations that adapt to your current emotional state and needs.
-            </p>
-          </Card>
-        </div>
-
-        {/* Support Section - Made button bigger */}
-        <div className="mt-12 sm:mt-16 text-center">
+        {/* Support Section - Better spacing */}
+        <div className="mt-auto pt-8 sm:pt-12 text-center">
           <Button
             onClick={() => setShowSupportSection(!showSupportSection)}
             variant="ghost"
-            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-6 sm:px-8 py-3 sm:py-4 text-base"
+            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 sm:px-8 py-2 sm:py-4 text-sm sm:text-base mb-6 sm:mb-8"
           >
-            <Gift className="w-5 h-5 mr-2" />
+            <Gift className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
             Support Us
           </Button>
+
+          {showSupportSection && (
+            <div className="mb-8 sm:mb-12">
+              <SupportSection />
+            </div>
+          )}
+
+          {/* Footer */}
+          <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
         </div>
-
-        {showSupportSection && <SupportSection />}
-
-        {/* Footer */}
-        <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
       </div>
 
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />

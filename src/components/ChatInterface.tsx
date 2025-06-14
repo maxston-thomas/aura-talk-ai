@@ -179,7 +179,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
         setTypingText('');
         callback();
       }
-    }, 20); // Increased typing speed from 30ms to 20ms
+    }, 15); // Faster typing speed
   };
 
   const cancelTyping = () => {
@@ -291,32 +291,36 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       
       <Header />
       
-      {/* Mode Sidebar */}
-      <div className={`fixed top-0 right-0 h-full w-80 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-l border-white/30 dark:border-slate-700/30 z-40 transition-transform duration-300 ease-in-out ${showModeSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="p-6 pt-24">
+      {/* Mode Sidebar with liquid crystal style */}
+      <div className={`fixed top-0 right-0 h-full w-72 sm:w-80 bg-white/10 dark:bg-slate-800/10 backdrop-blur-[40px] border-l border-white/20 dark:border-slate-700/20 z-40 transition-all duration-700 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${showModeSidebar ? 'translate-x-0 shadow-2xl' : 'translate-x-full'}`}>
+        <div className="p-4 sm:p-6 pt-20 sm:pt-24 h-full">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Conversation Mode</h3>
+            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Modes</h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowModeSidebar(false)}
-              className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full p-2"
+              className="hover:bg-white/20 dark:hover:bg-slate-800/20 rounded-full p-2 transition-all duration-300"
             >
               <X className="w-4 h-4" />
             </Button>
           </div>
-          <ModeSelector 
-            selectedMode={selectedMode} 
-            onModeSelect={handleModeSelect}
-            disabled={isTyping}
-          />
+          
+          {/* Vertical Mode Selector */}
+          <div className="space-y-3">
+            <ModeSelector 
+              selectedMode={selectedMode} 
+              onModeSelect={handleModeSelect}
+              disabled={isTyping}
+            />
+          </div>
         </div>
       </div>
 
       {/* Overlay */}
       {showModeSidebar && (
         <div 
-          className="fixed inset-0 bg-black/20 z-30 transition-opacity duration-300"
+          className="fixed inset-0 bg-black/10 backdrop-blur-sm z-30 transition-all duration-700"
           onClick={() => setShowModeSidebar(false)}
         />
       )}
@@ -343,27 +347,29 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             </div>
           </div>
           
-          {/* Mode Button */}
+          {/* Mode Button - Smaller on mobile */}
           <Button
             onClick={() => setShowModeSidebar(true)}
             variant="ghost"
             size="sm"
-            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 py-3 text-base"
+            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
           >
-            <Settings className="w-5 h-5 mr-2" />
-            {selectedMode.charAt(0).toUpperCase() + selectedMode.slice(1)}
+            <Settings className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Modes</span>
+            <span className="sm:hidden">Mode</span>
           </Button>
           
-          {/* Support Us Button */}
+          {/* Support Us Button - Much smaller on mobile */}
           <div className="ml-auto">
             <Button
               onClick={() => setShowSupportSection(!showSupportSection)}
               variant="ghost"
               size="sm"
-              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 py-3 text-base"
+              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
             >
-              <Gift className="w-5 h-5 mr-2" />
-              Support Us
+              <Gift className="w-3 h-3 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Support Us</span>
+              <span className="sm:hidden">Help</span>
             </Button>
           </div>
         </div>
@@ -450,22 +456,14 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             onBlur={handleInputBlur}
             placeholder={placeholderText}
             disabled={isTyping}
-            className="flex-1 bg-white/60 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/80 dark:focus:bg-slate-800/90 rounded-xl text-sm sm:text-base py-5 min-h-[64px]"
-            style={{ minHeight: 64 }}
+            className="flex-1 bg-white/60 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/80 dark:focus:bg-slate-800/90 rounded-xl text-sm sm:text-base py-3 sm:py-5 min-h-[48px] sm:min-h-[64px]"
           />
           <Button
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl px-6 transition-all duration-200 focus:scale-110 active:scale-95 animate-airplane"
-            style={{
-              minHeight: 64,
-              transition: 'transform 0.15s cubic-bezier(.4,0,.2,1)',
-              willChange: 'transform'
-            }}
+            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl px-4 sm:px-6 transition-all duration-200 focus:scale-110 active:scale-95 h-[48px] sm:h-[64px]"
           >
-            <span className="inline-block motion-safe:animate-none group-hover:animate-airplane-hover">
-              <Send className="w-4 h-4" />
-            </span>
+            <Send className="w-4 h-4" />
           </Button>
         </div>
       </div>
