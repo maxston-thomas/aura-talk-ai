@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
@@ -7,8 +8,12 @@ import { useAuth } from '@/hooks/useAuth';
 
 const Header = () => {
   const { user, signOut } = useAuth();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState('blue');
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return document.documentElement.classList.contains('dark');
+  });
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    return document.documentElement.getAttribute('data-theme') || 'blue';
+  });
   const [showThemeDropdown, setShowThemeDropdown] = useState(false);
 
   const themes = [
@@ -18,10 +23,33 @@ const Header = () => {
     { id: 'orange', name: 'Sunset Orange', colors: 'from-orange-400 via-red-400 to-pink-400' }
   ];
 
+  // Initialize theme on component mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'blue';
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    
+    setCurrentTheme(savedTheme);
+    setIsDarkMode(savedDarkMode);
+    
+    // Apply saved theme and dark mode
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.documentElement.classList.toggle('dark', savedDarkMode);
+    document.body.setAttribute('data-theme', savedTheme);
+    if (savedDarkMode) {
+      document.body.classList.add('dark');
+    }
+  }, []);
+
   const handleThemeChange = (themeId: string) => {
     setCurrentTheme(themeId);
     setShowThemeDropdown(false);
+    
+    // Save to localStorage
+    localStorage.setItem('theme', themeId);
+    
+    // Apply theme to both html and body elements
     document.documentElement.setAttribute('data-theme', themeId);
+    document.body.setAttribute('data-theme', themeId);
 
     // Apply theme colors to CSS variables
     const themeColors = {
@@ -35,15 +63,18 @@ const Header = () => {
     document.documentElement.style.setProperty('--theme-primary', colors.primary);
     document.documentElement.style.setProperty('--theme-secondary', colors.secondary);
     document.documentElement.style.setProperty('--theme-accent', colors.accent);
-
-    // Force trigger background update for body by toggling a data attr
-    // (background updates handled in index.css based on [data-theme])
-    document.body.setAttribute('data-bg-theme', themeId);
   };
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark', !isDarkMode);
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    
+    // Save to localStorage
+    localStorage.setItem('darkMode', newDarkMode.toString());
+    
+    // Apply dark mode to both html and body elements
+    document.documentElement.classList.toggle('dark', newDarkMode);
+    document.body.classList.toggle('dark', newDarkMode);
   };
 
   if (!user) return null;
