@@ -20,7 +20,12 @@ serve(async (req) => {
     
     if (!openAIApiKey) {
       console.error('OpenAI API key not found');
-      throw new Error('OpenAI API key not configured');
+      return new Response(JSON.stringify({ 
+        response: "I'm having trouble connecting to my AI service right now. Please try again later." 
+      }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const { userMessage, mode, mood } = await req.json();
@@ -64,22 +69,27 @@ serve(async (req) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('OpenAI API error:', response.status, errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      return new Response(JSON.stringify({ 
+        response: "I'm having trouble processing your message right now. Please try again in a moment." 
+      }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const data = await response.json();
     const aiResponse = data.choices[0].message.content;
     
-    console.log('AI response generated successfully');
+    console.log('AI response generated successfully:', aiResponse);
     return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error in chat-ai function:', error);
     return new Response(JSON.stringify({ 
-      error: "I'm here to listen and support you. Could you tell me more about what's on your mind?" 
+      response: "I apologize, but I'm experiencing some technical difficulties. Please try sending your message again." 
     }), {
-      status: 500,
+      status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
