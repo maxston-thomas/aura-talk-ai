@@ -16,24 +16,28 @@ const ModeSelector = ({ selectedMode, onModeSelect, disabled = false, layout = '
     {
       id: 'listen',
       name: 'Just Listen',
+      subtitle: 'Pure listening without judgment or advice',
       icon: Ear,
       gradient: 'from-purple-400 to-pink-500'
     },
     {
       id: 'advise',
       name: 'Advise',
+      subtitle: 'Gentle guidance and practical solutions',
       icon: Lightbulb,
       gradient: 'from-yellow-400 to-orange-500'
     },
     {
       id: 'motivate',
       name: 'Motivate',
+      subtitle: 'Energetic encouragement and positivity',
       icon: Zap,
       gradient: 'from-green-400 to-blue-500'
     },
     {
       id: 'divine',
       name: 'Divine',
+      subtitle: 'Spiritual and philosophical conversations',
       icon: Sparkles,
       gradient: 'from-indigo-400 to-purple-600'
     }
@@ -41,7 +45,7 @@ const ModeSelector = ({ selectedMode, onModeSelect, disabled = false, layout = '
 
   if (layout === 'vertical') {
     return (
-      <div className="space-y-3">
+      <div className="space-y-4">
         {modes.map((mode) => {
           const IconComponent = mode.icon;
           const isSelected = selectedMode === mode.id;
@@ -52,14 +56,21 @@ const ModeSelector = ({ selectedMode, onModeSelect, disabled = false, layout = '
               variant={isSelected ? "default" : "outline"}
               onClick={() => !disabled && onModeSelect(mode.id)}
               disabled={disabled}
-              className={`w-full h-auto px-4 py-4 flex items-center gap-3 transition-all duration-300 justify-start
+              className={`w-full h-auto px-4 py-5 flex flex-col items-start gap-2 transition-all duration-300 text-left
                 ${isSelected 
                   ? `bg-gradient-to-r ${mode.gradient} text-white border-none shadow-lg` 
                   : 'bg-white/40 dark:bg-slate-800/40 backdrop-blur-sm border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60'}
-                ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 cursor-pointer'}`}
+                ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] cursor-pointer'}`}
             >
-              <IconComponent className="w-5 h-5 flex-shrink-0" />
-              <div className="font-medium text-sm">{mode.name}</div>
+              <div className="flex items-center gap-3 w-full">
+                <IconComponent className="w-5 h-5 flex-shrink-0" />
+                <div className="font-medium text-sm">{mode.name}</div>
+              </div>
+              <div className={`text-xs leading-relaxed w-full ${
+                isSelected ? 'text-white/90' : 'text-slate-600 dark:text-slate-400'
+              }`}>
+                {mode.subtitle}
+              </div>
             </Button>
           );
         })}

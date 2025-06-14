@@ -29,6 +29,8 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [hasUserTyped, setHasUserTyped] = useState(false);
   const [showModeSidebar, setShowModeSidebar] = useState(false);
+  const [chatAttemptCount, setChatAttemptCount] = useState(0);
+  const [showFloatingSupportPanel, setShowFloatingSupportPanel] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -199,6 +201,14 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
+    // Increment chat attempt count and check if we should show support panel
+    const newCount = chatAttemptCount + 1;
+    setChatAttemptCount(newCount);
+    
+    if (newCount % 5 === 0) {
+      setShowFloatingSupportPanel(true);
+    }
+
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       content: inputValue,
@@ -269,6 +279,10 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     }
   };
 
+  const closeFloatingSupportPanel = () => {
+    setShowFloatingSupportPanel(false);
+  };
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -291,6 +305,23 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
       
       <Header />
+      
+      {/* Floating Support Panel */}
+      {showFloatingSupportPanel && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative max-w-md w-full">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={closeFloatingSupportPanel}
+              className="absolute -top-2 -right-2 z-10 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-full p-2 shadow-lg"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+            <SupportSection />
+          </div>
+        </div>
+      )}
       
       {/* Mode Sidebar with improved liquid crystal style */}
       <div className={`fixed top-0 right-0 h-full w-72 sm:w-80 bg-white/20 dark:bg-slate-800/20 backdrop-blur-[20px] border-l border-white/30 dark:border-slate-700/30 z-40 transition-all duration-700 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${showModeSidebar ? 'translate-x-0 shadow-2xl' : 'translate-x-full'}`}>
@@ -347,15 +378,15 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             </div>
           </div>
           
-          {/* Modes Button */}
+          {/* Modes Button - Made bigger */}
           <Button
             onClick={() => setShowModeSidebar(true)}
             variant="ghost"
             size="sm"
-            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-base"
+            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base h-auto"
           >
-            <Settings className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-            <span>Modes</span>
+            <Settings className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
+            <span className="font-medium">Modes</span>
           </Button>
           
           {/* Support Us Button - Smaller on mobile */}
@@ -427,12 +458,12 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           </div>
         </Card>
 
-        {/* Loading Indicator with Cancel Button */}
+        {/* Loading Indicator with Cancel Button - Updated text */}
         {isTyping && (
           <div className="flex justify-center items-center mb-3">
             <div className="flex items-center gap-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/30 dark:border-slate-700/30 rounded-full px-4 py-2">
               <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-              <span className="text-sm text-slate-600 dark:text-slate-400">AI is thinking...</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">AI is working...</span>
               <Button
                 variant="ghost"
                 size="sm"
