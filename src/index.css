@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -90,9 +91,10 @@
     /* improve contrast for all dark text elements */
   }
 
-  body, .dark body {
+  body {
     color-scheme: light dark;
     transition: background 0.5s;
+    min-height: 100vh;
   }
 
   /* Animate airplane (send button) */
@@ -151,38 +153,38 @@
     --theme-accent: 236 72 153;
   }
 
-  /* Dynamic theme backgrounds */
-  [data-theme="blue"] body {
-    background: linear-gradient(135deg, rgb(248 250 252) 0%, rgb(219 234 254) 50%, rgb(199 210 254) 100%);
+  /* Dynamic theme backgrounds - Light mode */
+  body[data-theme="blue"]:not(.dark) {
+    background: linear-gradient(135deg, rgb(248 250 252) 0%, rgb(219 234 254) 50%, rgb(199 210 254) 100%) !important;
   }
 
-  [data-theme="green"] body {
-    background: linear-gradient(135deg, rgb(240 253 244) 0%, rgb(196 253 221) 50%, rgb(167 243 208) 100%);
+  body[data-theme="green"]:not(.dark) {
+    background: linear-gradient(135deg, rgb(240 253 244) 0%, rgb(196 253 221) 50%, rgb(167 243 208) 100%) !important;
   }
 
-  [data-theme="purple"] body {
-    background: linear-gradient(135deg, rgb(250 245 255) 0%, rgb(233 213 255) 50%, rgb(196 181 253) 100%);
+  body[data-theme="purple"]:not(.dark) {
+    background: linear-gradient(135deg, rgb(250 245 255) 0%, rgb(233 213 255) 50%, rgb(196 181 253) 100%) !important;
   }
 
-  [data-theme="orange"] body {
-    background: linear-gradient(135deg, rgb(255 251 235) 0%, rgb(254 215 170) 50%, rgb(253 186 116) 100%);
+  body[data-theme="orange"]:not(.dark) {
+    background: linear-gradient(135deg, rgb(255 251 235) 0%, rgb(254 215 170) 50%, rgb(253 186 116) 100%) !important;
   }
 
-  /* Dark mode theme backgrounds */
-  [data-theme="blue"].dark body {
-    background: linear-gradient(135deg, rgb(15 23 42) 0%, rgb(30 41 59) 50%, rgb(51 65 85) 100%);
+  /* Dynamic theme backgrounds - Dark mode */
+  body[data-theme="blue"].dark {
+    background: linear-gradient(135deg, rgb(15 23 42) 0%, rgb(30 41 59) 50%, rgb(51 65 85) 100%) !important;
   }
 
-  [data-theme="green"].dark body {
-    background: linear-gradient(135deg, rgb(20 83 45) 0%, rgb(22 101 52) 50%, rgb(34 197 94) 100%);
+  body[data-theme="green"].dark {
+    background: linear-gradient(135deg, rgb(20 83 45) 0%, rgb(22 101 52) 50%, rgb(34 197 94) 100%) !important;
   }
 
-  [data-theme="purple"].dark body {
-    background: linear-gradient(135deg, rgb(88 28 135) 0%, rgb(124 58 237) 50%, rgb(147 51 234) 100%);
+  body[data-theme="purple"].dark {
+    background: linear-gradient(135deg, rgb(88 28 135) 0%, rgb(124 58 237) 50%, rgb(147 51 234) 100%) !important;
   }
 
-  [data-theme="orange"].dark body {
-    background: linear-gradient(135deg, rgb(154 52 18) 0%, rgb(194 65 12) 50%, rgb(234 88 12) 100%);
+  body[data-theme="orange"].dark {
+    background: linear-gradient(135deg, rgb(154 52 18) 0%, rgb(194 65 12) 50%, rgb(234 88 12) 100%) !important;
   }
 
   /* Mood hover effects */
@@ -218,6 +220,5 @@
 
   body {
     @apply bg-background text-foreground;
-    min-height: 100vh;
   }
 }
