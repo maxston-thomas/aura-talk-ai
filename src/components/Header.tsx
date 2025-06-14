@@ -23,33 +23,63 @@ const Header = () => {
     { id: 'orange', name: 'Sunset Orange', colors: 'from-orange-400 via-red-400 to-pink-400' }
   ];
 
+  // Apply theme and dark mode to body element
+  const applyThemeToBody = (themeId: string, darkMode: boolean) => {
+    console.log('Applying theme to body:', themeId, 'Dark mode:', darkMode);
+    
+    // Apply theme attribute to body
+    document.body.setAttribute('data-theme', themeId);
+    
+    // Apply dark mode class to body
+    if (darkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+    
+    // Also apply to html for compatibility
+    document.documentElement.setAttribute('data-theme', themeId);
+    document.documentElement.classList.toggle('dark', darkMode);
+  };
+
   // Initialize theme on component mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'blue';
     const savedDarkMode = localStorage.getItem('darkMode') === 'true';
     
+    console.log('Initializing theme:', savedTheme, 'Dark mode:', savedDarkMode);
+    
     setCurrentTheme(savedTheme);
     setIsDarkMode(savedDarkMode);
     
-    // Apply saved theme and dark mode
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    document.documentElement.classList.toggle('dark', savedDarkMode);
-    document.body.setAttribute('data-theme', savedTheme);
-    if (savedDarkMode) {
-      document.body.classList.add('dark');
-    }
+    // Apply saved theme and dark mode to body
+    applyThemeToBody(savedTheme, savedDarkMode);
+
+    // Apply theme colors to CSS variables
+    const themeColors = {
+      blue: { primary: '59 130 246', secondary: '147 51 234', accent: '236 72 153' },
+      green: { primary: '34 197 94', secondary: '16 185 129', accent: '20 184 166' },
+      purple: { primary: '147 51 234', secondary: '236 72 153', accent: '99 102 241' },
+      orange: { primary: '251 146 60', secondary: '239 68 68', accent: '236 72 153' }
+    };
+
+    const colors = themeColors[savedTheme as keyof typeof themeColors];
+    document.documentElement.style.setProperty('--theme-primary', colors.primary);
+    document.documentElement.style.setProperty('--theme-secondary', colors.secondary);
+    document.documentElement.style.setProperty('--theme-accent', colors.accent);
   }, []);
 
   const handleThemeChange = (themeId: string) => {
+    console.log('Theme changed to:', themeId);
+    
     setCurrentTheme(themeId);
     setShowThemeDropdown(false);
     
     // Save to localStorage
     localStorage.setItem('theme', themeId);
     
-    // Apply theme to both html and body elements
-    document.documentElement.setAttribute('data-theme', themeId);
-    document.body.setAttribute('data-theme', themeId);
+    // Apply theme to body with current dark mode state
+    applyThemeToBody(themeId, isDarkMode);
 
     // Apply theme colors to CSS variables
     const themeColors = {
@@ -67,14 +97,15 @@ const Header = () => {
 
   const toggleDarkMode = () => {
     const newDarkMode = !isDarkMode;
+    console.log('Dark mode toggled to:', newDarkMode);
+    
     setIsDarkMode(newDarkMode);
     
     // Save to localStorage
     localStorage.setItem('darkMode', newDarkMode.toString());
     
-    // Apply dark mode to both html and body elements
-    document.documentElement.classList.toggle('dark', newDarkMode);
-    document.body.classList.toggle('dark', newDarkMode);
+    // Apply dark mode to body with current theme
+    applyThemeToBody(currentTheme, newDarkMode);
   };
 
   if (!user) return null;
