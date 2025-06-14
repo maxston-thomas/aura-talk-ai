@@ -1,4 +1,6 @@
 
+import { supabase } from "@/integrations/supabase/client";
+
 export interface ChatMessage {
   id: string;
   content: string;
@@ -16,67 +18,27 @@ export class AIChatService {
 
   async generateResponse(userMessage: string, mode: string, mood: string): Promise<string> {
     try {
-      const response = await fetch('/functions/v1/chat-ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      console.log('Calling AI chat function with:', { userMessage, mode, mood });
+      
+      const { data, error } = await supabase.functions.invoke('chat-ai', {
+        body: {
           userMessage,
           mode,
           mood
-        }),
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
       }
 
-      const data = await response.json();
+      console.log('AI response received:', data);
       return data.response || "I'm here to listen and support you. Could you tell me more about what's on your mind?";
     } catch (error) {
       console.error('Error generating AI response:', error);
       return "I'm here to listen and support you. Could you tell me more about what's on your mind?";
     }
-  }
-
-  private async getMockResponse(userMessage: string, mode: string, mood: string): Promise<string> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const responses = {
-      listen: [
-        "I hear you. That sounds really important to you.",
-        "Thank you for sharing that with me. How does that make you feel?",
-        "I'm listening. Tell me more about that.",
-        "That must be significant for you to bring it up.",
-        "I can sense the emotion in your words. Please continue."
-      ],
-      advise: [
-        "Here's something that might help: try breaking this down into smaller, manageable steps.",
-        "Have you considered looking at this from a different perspective?",
-        "One approach could be to focus on what you can control in this situation.",
-        "Sometimes it helps to write down your thoughts to gain clarity.",
-        "Consider taking a step back and asking yourself what advice you'd give a friend in this situation."
-      ],
-      motivate: [
-        "You've got this! Every challenge is an opportunity to grow stronger.",
-        "I believe in your ability to handle whatever comes your way!",
-        "Remember, you've overcome difficulties before - you have that strength within you.",
-        "Today is a new chance to make progress, no matter how small!",
-        "Your resilience shines through. Keep moving forward, one step at a time."
-      ],
-      divine: [
-        "\"Cast all your anxiety on him because he cares for you.\" - 1 Peter 5:7. What comfort does this bring to your heart?",
-        "\"For I know the plans I have for you,\" declares the Lord, \"plans to prosper you and not to harm you, to give you hope and a future.\" - Jeremiah 29:11",
-        "\"The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you; in his love he will no longer rebuke you, but will rejoice over you with singing.\" - Zephaniah 3:17",
-        "\"Come to me, all you who are weary and burdened, and I will give you rest.\" - Matthew 11:28. How might this verse speak to your current situation?",
-        "\"And we know that in all things God works for the good of those who love him, who have been called according to his purpose.\" - Romans 8:28"
-      ]
-    };
-
-    const modeResponses = responses[mode as keyof typeof responses] || responses.listen;
-    return modeResponses[Math.floor(Math.random() * modeResponses.length)];
   }
 
   speakText(text: string, onWordSpoken?: (word: string) => void): Promise<void> {
