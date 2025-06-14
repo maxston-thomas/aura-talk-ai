@@ -211,7 +211,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
         </Card>
 
         {/* Input Area */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-end">
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
@@ -224,8 +224,9 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           <Button
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl px-4 sm:px-6 transition-all duration-200 focus:scale-110 active:scale-95 animate-airplane"
+            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl px-6 transition-all duration-200 focus:scale-110 active:scale-95 animate-airplane"
             style={{
+              minHeight: 64,
               transition: 'transform 0.15s cubic-bezier(.4,0,.2,1)',
               willChange: 'transform'
             }}

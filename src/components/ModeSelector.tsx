@@ -14,28 +14,24 @@ const ModeSelector = ({ selectedMode, onModeSelect }: ModeSelectorProps) => {
     {
       id: 'listen',
       name: 'Just Listen',
-      description: 'AI listens and reflects without advice',
       icon: Ear,
       gradient: 'from-purple-400 to-pink-500'
     },
     {
       id: 'advise',
       name: 'Advise',
-      description: 'Gentle, practical suggestions',
       icon: Lightbulb,
       gradient: 'from-yellow-400 to-orange-500'
     },
     {
       id: 'motivate',
       name: 'Motivate',
-      description: 'Positive and energetic encouragement',
       icon: Zap,
       gradient: 'from-green-400 to-blue-500'
     },
     {
       id: 'divine',
       name: 'Divine',
-      description: 'Spiritual, introspective, deep',
       icon: Sparkles,
       gradient: 'from-indigo-400 to-purple-600'
     }
@@ -61,17 +57,12 @@ const ModeSelector = ({ selectedMode, onModeSelect }: ModeSelectorProps) => {
                   ? `scale-90 bg-gradient-to-r ${mode.gradient} text-white border-none` 
                   : 'scale-100 bg-white/60 backdrop-blur-sm border-white/30 hover:bg-white/80'}
                 hover:scale-105 focus:scale-100`}
-              style={{ minHeight: 80, minWidth: 0 }}
+              style={{ minHeight: 60, minWidth: 0 }}
               onMouseEnter={e => { if(isSelected) e.currentTarget.style.transform = "scale(1.0)" }}
               onMouseLeave={e => { if(isSelected) e.currentTarget.style.transform = "scale(0.9)" }}
             >
               <IconComponent className="w-5 h-5" />
-              <div className="text-center">
-                <div className="font-medium text-sm">{mode.name}</div>
-                <div className={`text-xs mt-1 ${isSelected ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'}`}>
-                  {mode.description}
-                </div>
-              </div>
+              <div className="font-medium text-sm">{mode.name}</div>
             </Button>
           );
         })}

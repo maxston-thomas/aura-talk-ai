@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, Mic, Sparkles, Heart, Shield, Users, Gift } from 'lucide-react';
+import { MessageCircle, Mic, Sparkles, Heart, Shield, Users, Gift, Ear, Lightbulb, Zap, Brain, Lock, Smile } from 'lucide-react';
 import { useAuth, AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from "@/components/ui/sonner";
 import AuthModal from '@/components/AuthModal';
@@ -182,29 +182,78 @@ function AppContent() {
           onMoodHover={setHoveredMood}
         />
 
-        {/* Features */}
+        {/* Conversation Modes Section */}
+        <div className="mt-12 sm:mt-16 max-w-6xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-200 mb-8">
+            Choose Your Conversation Style
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Ear className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Just Listen</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                Pure listening without judgment or advice
+              </p>
+            </Card>
+
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Advise</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                Gentle guidance and practical solutions
+              </p>
+            </Card>
+
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Motivate</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                Energetic encouragement and positivity
+              </p>
+            </Card>
+
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Divine</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                Spiritual and philosophical conversations
+              </p>
+            </Card>
+          </div>
+        </div>
+
+        {/* Enhanced Features */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16 mt-12 sm:mt-16">
           <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-            <MessageCircle className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500 mx-auto mb-3 sm:mb-4" />
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Instant Chat</h3>
+            <Brain className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500 mx-auto mb-3 sm:mb-4" />
+            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">AI Emotional Intelligence</h3>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              Start conversations immediately with our empathetic AI that adapts to your mood and needs.
+              Advanced AI that understands and responds to your emotional state with empathy and care.
             </p>
           </Card>
 
-          <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105 opacity-60">
-            <Mic className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500 mx-auto mb-3 sm:mb-4" />
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Voice Chat</h3>
+          <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
+            <Lock className="w-8 h-8 sm:w-12 sm:h-12 text-green-500 mx-auto mb-3 sm:mb-4" />
+            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Zero Data Storage</h3>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              Future feature: Natural voice conversations with advanced speech recognition and synthesis.
+              Your conversations are never saved or stored. Complete privacy and confidentiality guaranteed.
             </p>
-            <p className="text-sm text-purple-600 font-medium mt-2">Coming Soon</p>
           </Card>
 
           <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105 sm:col-span-2 lg:col-span-1">
-            <Users className="w-8 h-8 sm:w-12 sm:h-12 text-green-500 mx-auto mb-3 sm:mb-4" />
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Different modes</h3>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">Use different modes as per your mood with our beautiful interface.</p>
+            <Smile className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500 mx-auto mb-3 sm:mb-4" />
+            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Mood-Adaptive Responses</h3>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+              Personalized conversations that adapt to your current emotional state and needs.
+            </p>
           </Card>
         </div>
 
