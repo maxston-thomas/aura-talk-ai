@@ -3,10 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, ArrowLeft, Loader2 } from 'lucide-react';
+import { Send, Sparkles, ArrowLeft, Loader2, Gift } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ModeSelector from './ModeSelector';
 import Header from './Header';
+import SupportSection from './SupportSection';
 import { toast } from 'sonner';
 import { aiChatService, ChatMessage } from '@/services/aiChatService';
 
@@ -24,6 +25,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const [selectedMode, setSelectedMode] = useState('listen');
   const [typingText, setTypingText] = useState('');
   const [currentTypingIndex, setCurrentTypingIndex] = useState(0);
+  const [showSupportSection, setShowSupportSection] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -162,7 +164,26 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Mood: {mood}</p>
             </div>
           </div>
+          
+          {/* Support Us Button */}
+          <div className="ml-auto">
+            <Button
+              onClick={() => setShowSupportSection(!showSupportSection)}
+              variant="ghost"
+              size="sm"
+              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-3 py-2"
+            >
+              <Gift className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
+
+        {/* Support Section */}
+        {showSupportSection && (
+          <div className="mb-4">
+            <SupportSection />
+          </div>
+        )}
 
         {/* Mode Selector */}
         <div className="mb-4">

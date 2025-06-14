@@ -257,6 +257,20 @@ function AppContent() {
           </Card>
         </div>
 
+        {/* Support Section */}
+        <div className="mt-12 sm:mt-16 text-center">
+          <Button
+            onClick={() => setShowSupportSection(!showSupportSection)}
+            variant="ghost"
+            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 sm:px-6 py-2 sm:py-3"
+          >
+            <Gift className="w-4 h-4 mr-2" />
+            Support Us
+          </Button>
+        </div>
+
+        {showSupportSection && <SupportSection />}
+
         {/* Footer */}
         <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
       </div>
