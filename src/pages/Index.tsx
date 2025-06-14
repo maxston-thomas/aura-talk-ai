@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -84,7 +83,8 @@ function AppContent() {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
         
-        <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24">
+        {/* Content with padding to avoid header collision */}
+        <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 pt-24">
           <div className="text-center mb-8 sm:mb-12">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
               <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
@@ -102,14 +102,14 @@ function AppContent() {
             onMoodHover={setHoveredMood}
           />
 
-          {/* Support Section */}
+          {/* Support Section - Made button bigger */}
           <div className="mt-12 sm:mt-16 text-center">
             <Button
               onClick={() => setShowSupportSection(!showSupportSection)}
               variant="ghost"
-              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 sm:px-6 py-2 sm:py-3"
+              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-6 sm:px-8 py-3 sm:py-4 text-base"
             >
-              <Gift className="w-4 h-4 mr-2" />
+              <Gift className="w-5 h-5 mr-2" />
               Support Us
             </Button>
           </div>
@@ -257,14 +257,14 @@ function AppContent() {
           </Card>
         </div>
 
-        {/* Support Section */}
+        {/* Support Section - Made button bigger */}
         <div className="mt-12 sm:mt-16 text-center">
           <Button
             onClick={() => setShowSupportSection(!showSupportSection)}
             variant="ghost"
-            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 sm:px-6 py-2 sm:py-3"
+            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-6 sm:px-8 py-3 sm:py-4 text-base"
           >
-            <Gift className="w-4 h-4 mr-2" />
+            <Gift className="w-5 h-5 mr-2" />
             Support Us
           </Button>
         </div>

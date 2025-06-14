@@ -1,5 +1,5 @@
 
-import { supabase } from "@/integrations/supabase/client";
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 export interface ChatMessage {
   id: string;
@@ -8,31 +8,54 @@ export interface ChatMessage {
   timestamp: Date;
 }
 
-export class AIChatService {
+class AiChatService {
+  private getSystemPrompt(mode: string, mood: string): string {
+    const moodContext = {
+      pleasant: "The user is feeling good and positive today.",
+      unpleasant: "The user is going through something difficult and needs support.",
+      calm: "The user is feeling peaceful and balanced."
+    };
+
+    const modeInstructions = {
+      listen: "Just listen and acknowledge their feelings without giving advice. Keep responses short and empathetic.",
+      advise: "Provide brief, practical advice and gentle guidance. Keep suggestions concise.",
+      motivate: "Be encouraging and energetic but keep it brief and focused.",
+      divine: "Engage in meaningful conversation but keep responses thoughtful yet concise."
+    };
+
+    return `You are AuraTalk, an empathetic AI companion. ${moodContext[mood as keyof typeof moodContext]} 
+
+Mode: ${mode} - ${modeInstructions[mode as keyof typeof modeInstructions]}
+
+IMPORTANT: Keep ALL responses under 100 words. Be warm, genuine, and concise. Focus on quality over quantity.`;
+  }
+
   async generateResponse(userMessage: string, mode: string, mood: string): Promise<string> {
     try {
-      console.log('Calling AI chat function with:', { userMessage, mode, mood });
-      
-      const { data, error } = await supabase.functions.invoke('chat-ai', {
-        body: {
-          userMessage,
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userMessage,
           mode,
-          mood
-        }
+          mood,
+          systemPrompt: this.getSystemPrompt(mode, mood)
+        }),
       });
 
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
+      if (!response.ok) {
+        throw new Error('Failed to generate response');
       }
 
-      console.log('AI response received:', data);
-      return data.response || "I'm here to listen and support you. Could you tell me more about what's on your mind?";
+      const data = await response.json();
+      return data.response;
     } catch (error) {
       console.error('Error generating AI response:', error);
-      return "I'm here to listen and support you. Could you tell me more about what's on your mind?";
+      throw error;
     }
   }
 }
 
-export const aiChatService = new AIChatService();
+export const aiChatService = new AiChatService();

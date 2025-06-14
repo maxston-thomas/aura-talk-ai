@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, ArrowLeft, Loader2, Gift } from 'lucide-react';
+import { Send, Sparkles, ArrowLeft, Loader2, Gift, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ModeSelector from './ModeSelector';
 import Header from './Header';
@@ -32,6 +32,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Placeholder animation with proper cleanup
   useEffect(() => {
@@ -180,7 +181,19 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     }, 30);
   };
 
-  // ... keep existing code (handleSendMessage, handleKeyPress functions)
+  const cancelTyping = () => {
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+    }
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setIsTyping(false);
+    setTypingText('');
+    toast.info('Response cancelled');
+  };
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -195,24 +208,30 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
 
+    abortControllerRef.current = new AbortController();
+
     try {
       const aiResponse = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
       
-      simulateTyping(aiResponse, () => {
-        const aiMessage: ChatMessage = {
-          id: (Date.now() + 1).toString(),
-          content: aiResponse,
-          sender: 'ai',
-          timestamp: new Date(),
-        };
-        
-        setMessages(prev => [...prev, aiMessage]);
-      });
+      if (!abortControllerRef.current?.signal.aborted) {
+        simulateTyping(aiResponse, () => {
+          const aiMessage: ChatMessage = {
+            id: (Date.now() + 1).toString(),
+            content: aiResponse,
+            sender: 'ai',
+            timestamp: new Date(),
+          };
+          
+          setMessages(prev => [...prev, aiMessage]);
+        });
+      }
     } catch (error) {
-      console.error('Error generating AI response:', error);
-      setIsTyping(false);
-      setTypingText('');
-      toast.error('Failed to generate response. Please try again.');
+      if (!abortControllerRef.current?.signal.aborted) {
+        console.error('Error generating AI response:', error);
+        setIsTyping(false);
+        setTypingText('');
+        toast.error('Failed to generate response. Please try again.');
+      }
     }
   };
 
@@ -256,6 +275,9 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       if (placeholderTimeoutRef.current) {
         clearTimeout(placeholderTimeoutRef.current);
       }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
     };
   }, []);
 
@@ -267,7 +289,8 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       
       <Header />
       
-      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-6 max-w-4xl flex-1 flex flex-col">
+      {/* Content with padding to avoid header collision */}
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-6 pt-20 max-w-4xl flex-1 flex flex-col">
         {/* Chat Header */}
         <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
           <Button
@@ -288,15 +311,16 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             </div>
           </div>
           
-          {/* Support Us Button */}
+          {/* Support Us Button - Made bigger */}
           <div className="ml-auto">
             <Button
               onClick={() => setShowSupportSection(!showSupportSection)}
               variant="ghost"
               size="sm"
-              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-3 py-2"
+              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 py-3 text-base"
             >
-              <Gift className="w-4 h-4" />
+              <Gift className="w-5 h-5 mr-2" />
+              Support Us
             </Button>
           </div>
         </div>
@@ -364,12 +388,20 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           </div>
         </Card>
 
-        {/* Loading Indicator */}
+        {/* Loading Indicator with Cancel Button */}
         {isTyping && (
           <div className="flex justify-center items-center mb-3">
-            <div className="flex items-center gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/30 dark:border-slate-700/30 rounded-full px-4 py-2">
+            <div className="flex items-center gap-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/30 dark:border-slate-700/30 rounded-full px-4 py-2">
               <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
               <span className="text-sm text-slate-600 dark:text-slate-400">AI is thinking...</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={cancelTyping}
+                className="h-6 w-6 p-0 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full"
+              >
+                <X className="w-3 h-3 text-red-500" />
+              </Button>
             </div>
           </div>
         )}
