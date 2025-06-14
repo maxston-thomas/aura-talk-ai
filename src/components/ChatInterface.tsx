@@ -1,15 +1,14 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Send, Sparkles, ArrowLeft, Loader2, Gift, X, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import ModeSelector from './ModeSelector';
 import Header from './Header';
 import SupportSection from './SupportSection';
 import { toast } from 'sonner';
 import { aiChatService, ChatMessage } from '@/services/aiChatService';
+import FloatingSupportPanel from './chat/FloatingSupportPanel';
+import ChatHeader from './chat/ChatHeader';
+import ChatMessages from './chat/ChatMessages';
+import ChatInput from './chat/ChatInput';
+import ModeSidebar from './chat/ModeSidebar';
 
 interface ChatInterfaceProps {
   mood: string;
@@ -137,8 +136,6 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       }
     };
   }, [isInputFocused, hasUserTyped, inputValue]);
-
-  // ... keep existing code (scrollToBottom function and useEffect for scrolling)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -320,103 +317,28 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       
       <Header />
       
-      {/* Floating Support Panel */}
-      {showFloatingSupportPanel && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="relative max-w-md w-full">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={closeFloatingSupportPanel}
-              className="absolute -top-2 -right-2 z-10 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-full p-2 shadow-lg"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-            <SupportSection />
-          </div>
-        </div>
-      )}
+      <FloatingSupportPanel 
+        show={showFloatingSupportPanel}
+        onClose={closeFloatingSupportPanel}
+      />
       
-      {/* Mode Sidebar with improved liquid crystal style */}
-      <div className={`fixed top-0 right-0 h-full w-72 sm:w-80 bg-white/20 dark:bg-slate-800/20 backdrop-blur-[20px] border-l border-white/30 dark:border-slate-700/30 z-40 transition-all duration-700 ease-[cubic-bezier(0.175,0.885,0.32,1.275)] ${showModeSidebar ? 'translate-x-0 shadow-2xl' : 'translate-x-full'}`}>
-        <div className="p-4 sm:p-6 pt-20 sm:pt-24 h-full">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Modes</h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowModeSidebar(false)}
-              className="hover:bg-white/20 dark:hover:bg-slate-800/20 rounded-full p-2 transition-all duration-300"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-          
-          {/* Vertical Mode Selector */}
-          <ModeSelector 
-            selectedMode={selectedMode} 
-            onModeSelect={handleModeSelect}
-            disabled={isTyping}
-            layout="vertical"
-          />
-        </div>
-      </div>
-
-      {/* Overlay with reduced opacity */}
-      {showModeSidebar && (
-        <div 
-          className="fixed inset-0 bg-black/5 backdrop-blur-sm z-30 transition-all duration-700"
-          onClick={() => setShowModeSidebar(false)}
-        />
-      )}
+      <ModeSidebar 
+        show={showModeSidebar}
+        selectedMode={selectedMode}
+        onModeSelect={handleModeSelect}
+        onClose={() => setShowModeSidebar(false)}
+        isTyping={isTyping}
+      />
       
       {/* Content with padding to avoid header collision */}
       <div className="relative z-10 container mx-auto px-3 sm:px-4 py-6 pt-20 max-w-4xl flex-1 flex flex-col">
-        {/* Chat Header */}
-        <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onBack}
-            className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full p-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center">
-              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-            </div>
-            <div>
-              <h2 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">AuraTalk</h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Mood: {mood}</p>
-            </div>
-          </div>
-          
-          {/* Modes Button - Made bigger */}
-          <Button
-            onClick={() => setShowModeSidebar(true)}
-            variant="ghost"
-            size="sm"
-            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base h-auto"
-          >
-            <Settings className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-            <span className="font-medium">Modes</span>
-          </Button>
-          
-          {/* Support Us Button - Smaller on mobile */}
-          <div className="ml-auto">
-            <Button
-              onClick={() => setShowSupportSection(!showSupportSection)}
-              variant="ghost"
-              size="sm"
-              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-2 sm:px-4 py-1 sm:py-3 text-xs sm:text-base"
-            >
-              <Gift className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Support Us</span>
-              <span className="sm:hidden">Help</span>
-            </Button>
-          </div>
-        </div>
+        <ChatHeader 
+          mood={mood}
+          onBack={onBack}
+          onShowModeSidebar={() => setShowModeSidebar(true)}
+          onToggleSupportSection={() => setShowSupportSection(!showSupportSection)}
+          showSupportSection={showSupportSection}
+        />
 
         {/* Support Section */}
         {showSupportSection && (
@@ -425,91 +347,24 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           </div>
         )}
 
-        {/* Chat Messages */}
-        <Card className="bg-white/40 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/40 mb-4 flex-1 overflow-hidden shadow-md">
-          <div className="p-3 sm:p-6 h-full overflow-y-auto">
-            <div className="space-y-3 sm:space-y-4">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div className="flex items-start gap-1 sm:gap-2 max-w-[85%] sm:max-w-xs lg:max-w-md">
-                    <div
-                      className={`px-3 sm:px-4 py-2 sm:py-3 rounded-2xl ${
-                        message.sender === 'user'
-                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
-                          : 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-slate-800 dark:text-slate-100 shadow'
-                      }`}
-                    >
-                      <p className="text-xs sm:text-sm leading-relaxed">
-                        {message.content}
-                      </p>
-                      <p className={`text-xs mt-1 ${
-                        message.sender === 'user' ? 'text-blue-100' : 'text-slate-500 dark:text-slate-300'
-                      }`}>
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              
-              {/* Typing Animation */}
-              {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-slate-800 dark:text-slate-100 px-3 sm:px-4 py-2 sm:py-3 rounded-2xl max-w-[85%] sm:max-w-xs lg:max-w-md">
-                    <p className="text-xs sm:text-sm">
-                      {typingText}
-                      <span className="animate-pulse">|</span>
-                    </p>
-                  </div>
-                </div>
-              )}
-              
-              <div ref={messagesEndRef} />
-            </div>
-          </div>
-        </Card>
+        <ChatMessages 
+          messages={messages}
+          isTyping={isTyping}
+          typingText={typingText}
+          onCancelTyping={cancelTyping}
+          ref={messagesEndRef}
+        />
 
-        {/* Loading Indicator with Cancel Button - Updated text */}
-        {isTyping && (
-          <div className="flex justify-center items-center mb-3">
-            <div className="flex items-center gap-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/30 dark:border-slate-700/30 rounded-full px-4 py-2">
-              <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-              <span className="text-sm text-slate-600 dark:text-slate-400">AI is working...</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={cancelTyping}
-                className="h-6 w-6 p-0 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-full"
-              >
-                <X className="w-3 h-3 text-red-500" />
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Input Area */}
-        <div className="flex gap-2 items-end">
-          <Input
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            placeholder={placeholderText}
-            disabled={isTyping}
-            className="flex-1 bg-white/60 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/30 focus:bg-white/80 dark:focus:bg-slate-800/90 rounded-xl text-sm sm:text-base py-3 sm:py-5 min-h-[48px] sm:min-h-[64px]"
-          />
-          <Button
-            onClick={handleSendMessage}
-            disabled={!inputValue.trim() || isTyping}
-            className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl px-4 sm:px-6 transition-all duration-200 focus:scale-110 active:scale-95 h-[48px] sm:h-[64px]"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
+        <ChatInput 
+          inputValue={inputValue}
+          onInputChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          onSendMessage={handleSendMessage}
+          placeholderText={placeholderText}
+          isTyping={isTyping}
+        />
       </div>
     </div>
   );
