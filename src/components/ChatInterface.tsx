@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, ArrowLeft, Loader2, Gift, X } from 'lucide-react';
+import { Send, Sparkles, ArrowLeft, Loader2, Gift, X, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import ModeSelector from './ModeSelector';
 import Header from './Header';
@@ -28,6 +28,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const [placeholderText, setPlaceholderText] = useState('Share your thoughts here');
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [hasUserTyped, setHasUserTyped] = useState(false);
+  const [showModeSidebar, setShowModeSidebar] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -178,7 +179,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
         setTypingText('');
         callback();
       }
-    }, 30);
+    }, 20); // Increased typing speed from 30ms to 20ms
   };
 
   const cancelTyping = () => {
@@ -263,6 +264,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
   const handleModeSelect = (mode: string) => {
     if (!isTyping) {
       setSelectedMode(mode);
+      setShowModeSidebar(false);
     }
   };
 
@@ -289,6 +291,36 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
       
       <Header />
       
+      {/* Mode Sidebar */}
+      <div className={`fixed top-0 right-0 h-full w-80 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-l border-white/30 dark:border-slate-700/30 z-40 transition-transform duration-300 ease-in-out ${showModeSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="p-6 pt-24">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Conversation Mode</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowModeSidebar(false)}
+              className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full p-2"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          <ModeSelector 
+            selectedMode={selectedMode} 
+            onModeSelect={handleModeSelect}
+            disabled={isTyping}
+          />
+        </div>
+      </div>
+
+      {/* Overlay */}
+      {showModeSidebar && (
+        <div 
+          className="fixed inset-0 bg-black/20 z-30 transition-opacity duration-300"
+          onClick={() => setShowModeSidebar(false)}
+        />
+      )}
+      
       {/* Content with padding to avoid header collision */}
       <div className="relative z-10 container mx-auto px-3 sm:px-4 py-6 pt-20 max-w-4xl flex-1 flex flex-col">
         {/* Chat Header */}
@@ -311,7 +343,18 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
             </div>
           </div>
           
-          {/* Support Us Button - Made bigger */}
+          {/* Mode Button */}
+          <Button
+            onClick={() => setShowModeSidebar(true)}
+            variant="ghost"
+            size="sm"
+            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 py-3 text-base"
+          >
+            <Settings className="w-5 h-5 mr-2" />
+            {selectedMode.charAt(0).toUpperCase() + selectedMode.slice(1)}
+          </Button>
+          
+          {/* Support Us Button */}
           <div className="ml-auto">
             <Button
               onClick={() => setShowSupportSection(!showSupportSection)}
@@ -332,16 +375,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           </div>
         )}
 
-        {/* Mode Selector */}
-        <div className="mb-4">
-          <ModeSelector 
-            selectedMode={selectedMode} 
-            onModeSelect={handleModeSelect}
-            disabled={isTyping}
-          />
-        </div>
-
-        {/* Chat Messages - Now takes remaining space */}
+        {/* Chat Messages */}
         <Card className="bg-white/40 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/40 mb-4 flex-1 overflow-hidden shadow-md">
           <div className="p-3 sm:p-6 h-full overflow-y-auto">
             <div className="space-y-3 sm:space-y-4">
@@ -406,7 +440,7 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           </div>
         )}
 
-        {/* Input Area - Now at the bottom */}
+        {/* Input Area */}
         <div className="flex gap-2 items-end">
           <Input
             value={inputValue}

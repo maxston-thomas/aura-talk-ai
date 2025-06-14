@@ -9,32 +9,31 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Fallback responses for when OpenAI is not available
 const getFallbackResponse = (mode: string, mood: string, userMessage: string): string => {
   const responses = {
     listen: [
-      "I hear you. That sounds really important to you.",
-      "Thank you for sharing that with me. How are you feeling about it?",
-      "I'm listening. Tell me more about what's on your mind.",
-      "That sounds significant. What's been the hardest part about this?"
+      "I hear you. That sounds really important to you. How are you feeling about all of this?",
+      "Thank you for sharing that with me. I can sense this means a lot to you. Tell me more about what's been on your mind.",
+      "I'm listening carefully to what you're saying. What's been the hardest part about this situation for you?",
+      "That sounds significant. I'm here to listen without judgment. What emotions are coming up for you right now?"
     ],
     advise: [
-      "Based on what you've shared, here's something to consider: take it one step at a time.",
-      "Sometimes the best approach is to start small. What's one thing you could try today?",
-      "It might help to write down your thoughts or talk to someone you trust.",
-      "Consider taking a moment to breathe and think about what matters most to you right now."
+      "Based on what you've shared, here's something to consider: take it one step at a time and focus on what you can control today.",
+      "Sometimes the best approach is to start small. What's one manageable thing you could try today that might help move you forward?",
+      "It might help to write down your thoughts or talk to someone you trust about this. Having clarity can make a big difference.",
+      "Consider taking a moment to breathe and think about what matters most to you right now. What would success look like in this situation?"
     ],
     motivate: [
-      "You've got this! Every challenge is an opportunity to grow stronger.",
-      "I believe in your ability to handle whatever comes your way!",
-      "You're more resilient than you realize. Keep pushing forward!",
-      "Every step forward, no matter how small, is progress worth celebrating!"
+      "You've got this! Every challenge is an opportunity to grow stronger, and I can already see your resilience shining through.",
+      "I believe in your ability to handle whatever comes your way! You've overcome challenges before, and you'll do it again.",
+      "You're more resilient than you realize. Keep pushing forward - even small steps count as progress worth celebrating!",
+      "Every step forward, no matter how small, is progress! You have the strength within you to create positive change."
     ],
     divine: [
-      "Consider this verse: 'Be still and know that I am God.' - Psalm 46:10",
-      "Remember: 'For I know the plans I have for you, declares the Lord.' - Jeremiah 29:11",
-      "Trust in the Lord with all your heart and lean not on your own understanding. - Proverbs 3:5",
-      "God is with you in this moment. His love and guidance are always available."
+      "Consider this verse: 'Be still and know that I am God.' - Psalm 46:10. Sometimes in the quiet moments, we find the guidance we seek.",
+      "Remember: 'For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you.' - Jeremiah 29:11",
+      "Trust in the Lord with all your heart and lean not on your own understanding. - Proverbs 3:5. God's wisdom surpasses our own.",
+      "God is with you in this moment. His love and guidance are always available to you. What is your heart telling you right now?"
     ]
   };
 
@@ -45,7 +44,6 @@ const getFallbackResponse = (mode: string, mood: string, userMessage: string): s
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -56,7 +54,6 @@ serve(async (req) => {
     const { userMessage, mode, mood } = await req.json();
     console.log('Request data:', { userMessage, mode, mood });
 
-    // If no OpenAI API key, return fallback response
     if (!openAIApiKey) {
       console.log('No OpenAI API key found, using fallback response');
       const fallbackResponse = getFallbackResponse(mode || 'listen', mood || 'calm', userMessage);
@@ -67,7 +64,6 @@ serve(async (req) => {
       });
     }
 
-    // Define system prompts based on mode
     const systemPrompts = {
       listen: "You are a compassionate AI therapist focused on active listening. Respond with empathy, ask thoughtful follow-up questions, and validate the user's feelings. Keep responses warm and supportive.",
       advise: "You are a helpful AI counselor providing practical guidance. Offer constructive advice, suggest actionable steps, and help users think through their challenges systematically.",
@@ -75,14 +71,13 @@ serve(async (req) => {
       divine: "You are a spiritual AI companion well-versed in biblical wisdom. Respond with relevant Bible verses, spiritual insights, and faith-based guidance. Always include a meaningful Bible verse that relates to the user's message."
     };
 
-    // Adjust response based on mood
     const moodContext = {
       pleasant: "The user is feeling positive today. Celebrate their good mood while being available for deeper conversation.",
       unpleasant: "The user is going through a difficult time. Be extra gentle, empathetic, and supportive in your response.",
       calm: "The user is in a peaceful state. Help maintain their tranquility while being ready to explore meaningful topics."
     };
 
-    const systemPrompt = `${systemPrompts[mode as keyof typeof systemPrompts]} ${moodContext[mood as keyof typeof moodContext]} Keep responses conversational, natural, and under 80 words.`;
+    const systemPrompt = `${systemPrompts[mode as keyof typeof systemPrompts]} ${moodContext[mood as keyof typeof moodContext]} Keep responses conversational and natural.`;
 
     console.log('Calling OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -97,7 +92,7 @@ serve(async (req) => {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage }
         ],
-        max_tokens: 120,
+        max_tokens: 150,
         temperature: 0.7,
       }),
     });
@@ -108,7 +103,6 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('OpenAI API error:', response.status, errorText);
       
-      // Return fallback response instead of error
       const fallbackResponse = getFallbackResponse(mode || 'listen', mood || 'calm', userMessage);
       
       return new Response(JSON.stringify({ response: fallbackResponse }), {
@@ -123,7 +117,6 @@ serve(async (req) => {
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       console.error('Invalid OpenAI response structure:', data);
       
-      // Return fallback response
       const fallbackResponse = getFallbackResponse(mode || 'listen', mood || 'calm', userMessage);
       
       return new Response(JSON.stringify({ response: fallbackResponse }), {
@@ -141,7 +134,6 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in chat-ai function:', error);
     
-    // Return fallback response instead of error
     const fallbackResponse = getFallbackResponse('listen', 'calm', 'Hello');
     
     return new Response(JSON.stringify({ response: fallbackResponse }), {
