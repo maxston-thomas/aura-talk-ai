@@ -16,7 +16,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
-  const { user, signIn, signOut } = useAuth();
+  const { user, signIn, signOut, loading } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedMood, setSelectedMood] = useState('');
   const [showChat, setShowChat] = useState(false);
@@ -41,6 +41,18 @@ const Index = () => {
       }
     };
   }, []);
+
+  // Reset all states when user logs out
+  useEffect(() => {
+    if (!user && !loading) {
+      setSelectedMood('');
+      setShowChat(false);
+      setShowAbout(false);
+      setShowContact(false);
+      setShowPrivacy(false);
+      setShowTerms(false);
+    }
+  }, [user, loading]);
 
   const handleMoodSelect = (mood: string) => {
     setSelectedMood(mood);
@@ -74,6 +86,18 @@ const Index = () => {
     setShowPrivacy(false);
     setShowTerms(false);
   };
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 flex items-center justify-center">
+        <div className="text-center">
+          <Sparkles className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 dark:text-slate-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -118,11 +142,11 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Conditional Page Rendering */}
-      {showAbout && <AboutPage onBack={handleBackFromPage} />}
-      {showContact && <ContactPage onBack={handleBackFromPage} />}
-      {showPrivacy && <PrivacyPolicy onBack={handleBackFromPage} />}
-      {showTerms && <TermsConditions onBack={handleBackFromPage} />}
+      {/* Conditional Page Rendering - Only show if user is authenticated */}
+      {user && showAbout && <AboutPage onBack={handleBackFromPage} />}
+      {user && showContact && <ContactPage onBack={handleBackFromPage} />}
+      {user && showPrivacy && <PrivacyPolicy onBack={handleBackFromPage} />}
+      {user && showTerms && <TermsConditions onBack={handleBackFromPage} />}
     </>
   );
 };
