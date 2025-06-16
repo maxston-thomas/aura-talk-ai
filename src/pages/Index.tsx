@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
@@ -97,7 +98,7 @@ const Index = () => {
               <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-8 py-3" onClick={() => setShowAuthModal(true)}>
                 Get Started
               </Button>
-              <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} onSignIn={signIn} />
+              <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
             </div>
           ) : !showChat ? (
             <MoodSelector onMoodSelect={handleMoodSelect} />
