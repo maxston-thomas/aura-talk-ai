@@ -1,383 +1,127 @@
-
-import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { MessageCircle, Mic, Sparkles, Heart, Shield, Users, Gift, Ear, Lightbulb, Zap, Brain, Lock, Smile, ArrowLeft } from 'lucide-react';
-import { useAuth, AuthProvider } from '@/hooks/useAuth';
-import { Toaster } from "@/components/ui/sonner";
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
 import MoodSelector from '@/components/MoodSelector';
+import ModeSelector from '@/components/ModeSelector';
 import ChatInterface from '@/components/ChatInterface';
-import PrivacyPolicy from '@/components/PrivacyPolicy';
-import TermsConditions from '@/components/TermsConditions';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import SupportSection from '@/components/SupportSection';
 import AboutPage from '@/components/AboutPage';
 import ContactPage from '@/components/ContactPage';
+import PrivacyPolicy from '@/components/PrivacyPolicy';
+import TermsConditions from '@/components/TermsConditions';
+import { Heart, Brain, MessageCircle, Shield, Zap, Users, Star, Sparkles } from 'lucide-react';
+import { Card } from "@/components/ui/card";
 
-function AppContent() {
-  const { user, loading } = useAuth();
+const Index = () => {
+  const { user, signIn, signOut } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [selectedMood, setSelectedMood] = useState('');
   const [showChat, setShowChat] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'contact' | 'privacy' | 'terms'>('home');
-  const [showSupportSection, setShowSupportSection] = useState(false);
-  const [hoveredMood, setHoveredMood] = useState<string | null>(null);
+  const [showAbout, setShowAbout] = useState(false);
+  const [showContact, setShowContact] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+
+  useEffect(() => {
+    // Load Google AdSense script
+    const script = document.createElement('script');
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7779472086690894';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup script on unmount
+      const existingScript = document.querySelector('script[src*="adsbygoogle"]');
+      if (existingScript && existingScript.parentNode) {
+        existingScript.parentNode.removeChild(existingScript);
+      }
+    };
+  }, []);
 
   const handleMoodSelect = (mood: string) => {
     setSelectedMood(mood);
-    if (user) {
-      setShowChat(true);
-    } else {
-      setShowAuthModal(true);
-    }
+    setShowChat(true);
   };
 
-  const getBackgroundGradient = () => {
-    if (!hoveredMood) return 'from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700';
-    
-    switch (hoveredMood) {
-      case 'pleasant':
-        return 'from-pink-50 via-orange-50 to-rose-100 dark:from-pink-900/30 dark:via-orange-900/30 dark:to-rose-900/30';
-      case 'unpleasant':
-        return 'from-blue-900/20 via-purple-900/20 to-indigo-900/20 dark:from-blue-900/40 dark:via-purple-900/40 dark:to-indigo-900/40';
-      case 'calm':
-        return 'from-teal-50 via-sky-50 to-cyan-100 dark:from-teal-900/30 dark:via-sky-900/30 dark:to-cyan-900/30';
-      default:
-        return 'from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700';
-    }
+  const handleBackToMoodSelection = () => {
+    setShowChat(false);
+    setSelectedMood('');
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <Sparkles className="w-6 h-6 text-white" />
-          </div>
-          <p className="text-slate-600 dark:text-slate-400">Loading AuraTalk...</p>
-        </div>
-      </div>
-    );
-  }
+  const handleAboutClick = () => {
+    setShowAbout(true);
+  };
 
-  if (currentPage === 'about') {
-    return <AboutPage onBack={() => setCurrentPage('home')} />;
-  }
+  const handleContactClick = () => {
+    setShowContact(true);
+  };
 
-  if (currentPage === 'contact') {
-    return <ContactPage onBack={() => setCurrentPage('home')} />;
-  }
+  const handlePrivacyClick = () => {
+    setShowPrivacy(true);
+  };
 
-  if (currentPage === 'privacy') {
-    return <PrivacyPolicy onBack={() => setCurrentPage('home')} />;
-  }
+  const handleTermsClick = () => {
+    setShowTerms(true);
+  };
 
-  if (currentPage === 'terms') {
-    return <TermsConditions onBack={() => setCurrentPage('home')} />;
-  }
-
-  if (showChat && selectedMood) {
-    return <ChatInterface mood={selectedMood} onBack={() => {
-      setShowChat(false);
-      setSelectedMood(null);
-    }} />;
-  }
-
-  if (user) {
-    return (
-      <div className={`min-h-screen bg-gradient-to-br ${getBackgroundGradient()} relative overflow-hidden transition-all duration-500`}>
-        <Header />
-        
-        {/* Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
-        
-        {/* Content with padding to avoid header collision */}
-        <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 pt-24 min-h-screen flex flex-col">
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-              <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-            </div>
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent mb-4">
-              AuraTalk
-            </h1>
-            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 mb-6 sm:mb-8">
-              Ready to start your conversation?
-            </p>
-          </div>
-
-          <div className="flex-1">
-            <MoodSelector 
-              onMoodSelect={handleMoodSelect} 
-              onMoodHover={setHoveredMood}
-            />
-          </div>
-
-          {/* Support Section - Properly spaced */}
-          <div className="mt-12 sm:mt-16 mb-8 sm:mb-12 text-center">
-            <Button
-              onClick={() => setShowSupportSection(!showSupportSection)}
-              variant="ghost"
-              className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 sm:px-8 py-2 sm:py-4 text-sm sm:text-base"
-            >
-              <Gift className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Support Us
-            </Button>
-          </div>
-
-          {showSupportSection && (
-            <div className="mb-8 sm:mb-12">
-              <SupportSection />
-            </div>
-          )}
-          
-          {/* Footer with proper spacing */}
-          <div className="mt-auto pt-8 sm:pt-12">
-            <Footer 
-              onAboutClick={() => setCurrentPage('about')}
-              onContactClick={() => setCurrentPage('contact')}
-              onPrivacyClick={() => setCurrentPage('privacy')} 
-              onTermsClick={() => setCurrentPage('terms')} 
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleBackFromPage = () => {
+    setShowAbout(false);
+    setShowContact(false);
+    setShowPrivacy(false);
+    setShowTerms(false);
+  };
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${getBackgroundGradient()} relative overflow-hidden transition-all duration-500`}>
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
-      <div className="absolute top-1/4 right-1/4 w-64 sm:w-96 h-64 sm:h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-1/4 left-1/4 w-48 sm:w-64 h-48 sm:h-64 bg-gradient-to-r from-pink-400/20 to-blue-400/20 dark:from-pink-600/30 dark:to-blue-600/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      
-      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-8 sm:py-12 min-h-screen flex flex-col">
-        {/* Header */}
-        <div className="text-center mb-12 sm:mb-16">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 animate-pulse">
-            <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent mb-4 sm:mb-6">
-            AuraTalk
-          </h1>
-          <p className="text-xl sm:text-2xl md:text-3xl text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">Your AI Powered Emotional Companion</p>
-          
-          {/* Main Content Section */}
-          <div className="max-w-4xl mx-auto mb-8 sm:mb-12 text-left">
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8 mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6 text-center">What is AuraTalk?</h2>
-              <div className="space-y-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
-                <p>
-                  AuraTalk is a revolutionary AI emotional support platform designed to provide you with a safe, private space to express your feelings and thoughts. Our advanced artificial intelligence companion understands your emotional state and responds with empathy, wisdom, and care.
-                </p>
-                <p>
-                  Whether you're feeling overwhelmed, seeking motivation, or simply need someone to listen, AuraTalk adapts to your unique emotional needs. Our personal AI companion uses cutting-edge emotional intelligence technology to provide mental wellness support that's available 24/7.
-                </p>
-                <p>
-                  What makes AuraTalk truly special is our commitment to your privacy. Unlike other platforms, we never save or store your conversations. Every interaction is completely confidential, allowing you to speak freely without any concerns about data privacy or security.
-                </p>
-              </div>
-            </Card>
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-red-400/20 dark:from-pink-600/30 dark:to-red-600/30 rounded-full blur-3xl animate-pulse"></div>
 
-            {/* Mood Explanations */}
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8 mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6 text-center">Understanding Your Moods</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Smile className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Pleasant</h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    When you're feeling good, positive, and upbeat, the Pleasant mode celebrates your joy and helps you maintain that wonderful energy. Share your successes, dreams, and happy moments with an AI companion that truly understands your positive emotions.
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Heart className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Unpleasant</h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    During difficult times when you're feeling sad, anxious, or overwhelmed, the Unpleasant mode provides compassionate support and understanding. Our AI companion offers comfort, validation, and gentle guidance to help you process challenging emotions.
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Brain className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Calm</h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    When you're seeking peace, balance, and mindful reflection, the Calm mode creates a serene space for thoughtful conversation. Perfect for meditation insights, philosophical discussions, or simply finding your center in a busy world.
-                  </p>
-                </div>
-              </div>
-            </Card>
+        <Header />
 
-            {/* Conversation Modes */}
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8 mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6 text-center">Choose Your Conversation Style</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Ear className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Just Listen</h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    Sometimes you just need someone to hear you without judgment or advice. Our AI companion provides pure, empathetic listening - acknowledging your feelings and creating a safe space for emotional expression without trying to fix or change anything.
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Lightbulb className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Advise</h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    When you're facing challenges and seeking guidance, the Advise mode offers thoughtful, practical solutions. Our AI companion draws from vast knowledge to provide gentle, actionable advice tailored to your specific situation and emotional state.
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Zap className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Motivate</h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    Need energy and inspiration? The Motivate mode brings enthusiasm, encouragement, and positive reinforcement to help you achieve your goals. Our AI companion becomes your personal cheerleader, boosting your confidence and drive.
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Sparkles className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Divine</h3>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    Explore deeper meaning and spiritual insights with the Divine mode. Perfect for philosophical conversations, existential questions, and spiritual growth. Our AI companion engages in profound discussions about life's bigger picture and meaning.
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            {/* How It Works */}
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8 mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6 text-center">How AuraTalk Works</h2>
-              <div className="space-y-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
-                <p>
-                  <strong>Step 1: Choose Your Mood</strong> - Start by selecting how you're feeling today. This helps our AI companion understand your emotional state and respond appropriately.
-                </p>
-                <p>
-                  <strong>Step 2: Select Conversation Style</strong> - Pick the type of interaction you need: listening, advice, motivation, or spiritual guidance.
-                </p>
-                <p>
-                  <strong>Step 3: Start Talking</strong> - Begin your conversation through text or voice. Our AI adapts to your communication style and emotional needs in real-time.
-                </p>
-                <p>
-                  <strong>Complete Privacy</strong> - Everything you share disappears after your session. No data storage, no conversation logs, no privacy concerns - just pure, confidential emotional support.
-                </p>
-              </div>
-            </Card>
-
-            {/* Support Message */}
-            <Card className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200/50 dark:border-pink-700/50 p-6 sm:p-8 mb-8">
-              <div className="text-center">
-                <Heart className="w-12 h-12 text-pink-500 mx-auto mb-4" />
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200 mb-4">
-                  💛 Support Our Mission
-                </h3>
-                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-6">
-                  AuraTalk is built with love and dedication to provide free, accessible mental wellness support to everyone. If you find value in our AI emotional companion and it helps brighten your day or provides comfort during difficult times, consider supporting our mission.
-                </p>
-                <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400">
-                  Your support helps us keep AuraTalk free, private, and continuously improving to serve those who need emotional support the most. Every contribution, no matter how small, makes a meaningful difference in someone's mental wellness journey.
-                </p>
-              </div>
-            </Card>
-          </div>
-          
-          {/* Call to Action */}
-          <Button onClick={() => setShowAuthModal(true)} size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 sm:px-20 py-6 sm:py-10 text-xl sm:text-3xl rounded-2xl sm:rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 mb-6 sm:mb-8">
-            <Heart className="w-6 h-6 sm:w-10 sm:h-10 mr-3 sm:mr-6" />
-            Start Your Journey
-          </Button>
-          
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-            Made with ❤️ in Chennai by Maxston
-          </p>
-        </div>
-
-        <div className="flex-1">
-          {/* Mood Selector */}
-          <MoodSelector 
-            onMoodSelect={handleMoodSelect} 
-            onMoodHover={setHoveredMood}
-          />
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16 mt-12 sm:mt-16">
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-              <Brain className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500 mx-auto mb-3 sm:mb-4" />
-              <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">AI Emotional Intelligence</h3>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-                Advanced AI that understands and responds to your emotional state with empathy and care, providing personalized mental wellness support.
+        <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 max-w-4xl">
+          {/* Main Content */}
+          {!user ? (
+            <div className="text-center space-y-6">
+              <h1 className="text-4xl sm:text-5xl font-bold text-slate-800 dark:text-slate-200">
+                AuraTalk AI <Sparkles className="inline-block w-8 h-8 sm:w-10 sm:h-10 ml-2 text-yellow-500" />
+              </h1>
+              <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400">
+                Your voice-powered emotional AI companion. Speak freely and feel heard with complete privacy.
               </p>
-            </Card>
-
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-              <Lock className="w-8 h-8 sm:w-12 sm:h-12 text-green-500 mx-auto mb-3 sm:mb-4" />
-              <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Zero Data Storage</h3>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-                Your conversations are never saved or stored. Complete privacy and confidentiality guaranteed for your peace of mind.
-              </p>
-            </Card>
-
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105 sm:col-span-2 lg:col-span-1">
-              <Smile className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500 mx-auto mb-3 sm:mb-4" />
-              <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Mood-Adaptive Responses</h3>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-                Personalized conversations that adapt to your current emotional state and needs, ensuring relevant support every time.
-              </p>
-            </Card>
-          </div>
-        </div>
-
-        {/* Support Section - Better spacing */}
-        <div className="mt-auto pt-8 sm:pt-12 text-center">
-          <Button
-            onClick={() => setShowSupportSection(!showSupportSection)}
-            variant="ghost"
-            className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 hover:bg-white/60 dark:hover:bg-slate-800/60 px-4 sm:px-8 py-2 sm:py-4 text-sm sm:text-base mb-6 sm:mb-8"
-          >
-            <Gift className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            Support Us
-          </Button>
-
-          {showSupportSection && (
-            <div className="mb-8 sm:mb-12">
-              <SupportSection />
+              <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-8 py-3" onClick={() => setShowAuthModal(true)}>
+                Get Started
+              </Button>
+              <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)} onSignIn={signIn} />
             </div>
+          ) : !showChat ? (
+            <MoodSelector onMoodSelect={handleMoodSelect} />
+          ) : (
+            <ChatInterface mood={selectedMood} onBack={handleBackToMoodSelection} />
           )}
 
           {/* Footer */}
-          <Footer 
-            onAboutClick={() => setCurrentPage('about')}
-            onContactClick={() => setCurrentPage('contact')}
-            onPrivacyClick={() => setCurrentPage('privacy')} 
-            onTermsClick={() => setCurrentPage('terms')} 
-          />
+          <div className="mt-12 sm:mt-16">
+            <Footer
+              onAboutClick={handleAboutClick}
+              onContactClick={handleContactClick}
+              onPrivacyClick={handlePrivacyClick}
+              onTermsClick={handleTermsClick}
+            />
+          </div>
         </div>
       </div>
 
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
-      <Toaster />
-    </div>
-  );
-}
-
-const Index = () => {
-  return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+      {/* Conditional Page Rendering */}
+      {showAbout && <AboutPage onBack={handleBackFromPage} />}
+      {showContact && <ContactPage onBack={handleBackFromPage} />}
+      {showPrivacy && <PrivacyPolicy onBack={handleBackFromPage} />}
+      {showTerms && <TermsConditions onBack={handleBackFromPage} />}
+    </>
   );
 };
 
