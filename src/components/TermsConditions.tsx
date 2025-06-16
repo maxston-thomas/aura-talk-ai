@@ -60,23 +60,29 @@ const TermsConditions = ({ onBack }: TermsConditionsProps) => {
 
             <h3 className="text-lg sm:text-xl font-semibold mb-3">1. Use of Service</h3>
             <p className="mb-4">AuraTalk is provided free of charge for personal, non-commercial use.</p>
-            <p className="mb-6">You agree to use it responsibly and not for harmful or abusive purposes.</p>
+            <p className="mb-4">You agree to use it responsibly and not for harmful or abusive purposes.</p>
+            <p className="mb-6">Spamming, flooding, or excessive use of the conversation bot is prohibited and may result in temporary access restrictions.</p>
 
             <h3 className="text-lg sm:text-xl font-semibold mb-3">2. No Guarantees</h3>
             <p className="mb-4">While we strive for high availability, AuraTalk is provided "as is" without warranties.</p>
             <p className="mb-6">We may update or modify the service without notice.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">3. Donations</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">3. Responsible Usage</h3>
+            <p className="mb-4">Users must engage with AuraTalk in good faith for emotional support purposes.</p>
+            <p className="mb-4">Misuse, including but not limited to spamming messages, testing limits, or generating unnecessary server load is not permitted.</p>
+            <p className="mb-6">We reserve the right to implement usage limits to ensure fair access for all users.</p>
+
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">4. Donations</h3>
             <p className="mb-4">Donations are optional and non-refundable.</p>
             <p className="mb-6">Supporting us does not unlock extra features; it helps sustain the project.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">4. Limitation of Liability</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">5. Limitation of Liability</h3>
             <p className="mb-6">We are not liable for any damages arising from the use of this app.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">5. Changes to Terms</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">6. Changes to Terms</h3>
             <p className="mb-6">We may update these terms occasionally. Continued use means you agree to the changes.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">6. Contact</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">7. Contact</h3>
             <p className="mb-4">If you have any concerns, contact us at auratalkai@gmail.com.</p>
           </div>
         </Card>

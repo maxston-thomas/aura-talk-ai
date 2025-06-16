@@ -1,7 +1,8 @@
+
 import React, { useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Mail, MessageCircle, Heart } from 'lucide-react';
+import { ArrowLeft, Mail, MessageCircle, Heart, Lightbulb, Users, Shield } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
 

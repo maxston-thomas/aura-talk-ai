@@ -79,7 +79,12 @@ const PrivacyPolicy = ({ onBack }: PrivacyPolicyProps) => {
             <p className="mb-4">Our app does not retain or expose any user-generated data.</p>
             <p className="mb-6">All operations happen in your browser session unless explicitly mentioned.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">6. Contact Us</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">6. Responsible Usage</h3>
+            <p className="mb-4">We ask all users to use AuraTalk responsibly and respectfully.</p>
+            <p className="mb-4">Please do not spam or flood the conversation bot with excessive messages.</p>
+            <p className="mb-6">AuraTalk is designed for meaningful emotional support conversations, not for testing limits or generating unnecessary traffic.</p>
+
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">7. Contact Us</h3>
             <p className="mb-4">If you have questions, reach us at auratalkai@gmail.com.</p>
           </div>
         </Card>

@@ -12,6 +12,7 @@ import PrivacyPolicy from '@/components/PrivacyPolicy';
 import TermsConditions from '@/components/TermsConditions';
 import { Heart, Brain, MessageCircle, Shield, Zap, Users, Star, Sparkles } from 'lucide-react';
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { user, signIn, signOut } = useAuth();
@@ -96,7 +97,7 @@ const Index = () => {
               <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-8 py-3" onClick={() => setShowAuthModal(true)}>
                 Get Started
               </Button>
-              <AuthModal show={showAuthModal} onClose={() => setShowAuthModal(false)} onSignIn={signIn} />
+              <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} onSignIn={signIn} />
             </div>
           ) : !showChat ? (
             <MoodSelector onMoodSelect={handleMoodSelect} />
