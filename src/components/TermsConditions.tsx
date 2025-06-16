@@ -66,7 +66,12 @@ const TermsConditions = ({ onBack }: TermsConditionsProps) => {
         </Card>
 
         <div className="mt-12 sm:mt-16">
-          <Footer onPrivacyClick={() => {}} onTermsClick={() => {}} />
+          <Footer 
+            onAboutClick={() => {}} 
+            onContactClick={() => {}} 
+            onPrivacyClick={() => {}} 
+            onTermsClick={() => {}} 
+          />
         </div>
       </div>
     </div>
