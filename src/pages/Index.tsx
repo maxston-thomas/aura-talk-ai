@@ -1,7 +1,8 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, Mic, Sparkles, Heart, Shield, Users, Gift, Ear, Lightbulb, Zap, Brain, Lock, Smile } from 'lucide-react';
+import { MessageCircle, Mic, Sparkles, Heart, Shield, Users, Gift, Ear, Lightbulb, Zap, Brain, Lock, Smile, ArrowLeft } from 'lucide-react';
 import { useAuth, AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from "@/components/ui/sonner";
 import AuthModal from '@/components/AuthModal';
@@ -12,13 +13,15 @@ import TermsConditions from '@/components/TermsConditions';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SupportSection from '@/components/SupportSection';
+import AboutPage from '@/components/AboutPage';
+import ContactPage from '@/components/ContactPage';
 
 function AppContent() {
   const { user, loading } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [showChat, setShowChat] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'privacy' | 'terms'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'contact' | 'privacy' | 'terms'>('home');
   const [showSupportSection, setShowSupportSection] = useState(false);
   const [hoveredMood, setHoveredMood] = useState<string | null>(null);
 
@@ -57,6 +60,14 @@ function AppContent() {
         </div>
       </div>
     );
+  }
+
+  if (currentPage === 'about') {
+    return <AboutPage onBack={() => setCurrentPage('home')} />;
+  }
+
+  if (currentPage === 'contact') {
+    return <ContactPage onBack={() => setCurrentPage('home')} />;
   }
 
   if (currentPage === 'privacy') {
@@ -124,7 +135,12 @@ function AppContent() {
           
           {/* Footer with proper spacing */}
           <div className="mt-auto pt-8 sm:pt-12">
-            <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
+            <Footer 
+              onAboutClick={() => setCurrentPage('about')}
+              onContactClick={() => setCurrentPage('contact')}
+              onPrivacyClick={() => setCurrentPage('privacy')} 
+              onTermsClick={() => setCurrentPage('terms')} 
+            />
           </div>
         </div>
       </div>
@@ -147,32 +163,139 @@ function AppContent() {
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent mb-4 sm:mb-6">
             AuraTalk
           </h1>
-          <p className="text-xl sm:text-2xl md:text-3xl text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">Your AI powered Emotional Companion</p>
+          <p className="text-xl sm:text-2xl md:text-3xl text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">Your AI Powered Emotional Companion</p>
           
-          {/* Privacy-focused quotes */}
-          <div className="max-w-4xl mx-auto mb-6 sm:mb-8">
-            <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-2 sm:mb-3 italic">
-              "Speak freely and feel heard with complete privacy. No conversations saved."
-            </p>
-            <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-2 sm:mb-3 italic">
-              "A safe space for your thoughts and feelings"
-            </p>
-            <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 mb-4 sm:mb-6 italic">
-              "Privacy-first emotional support platform"
-            </p>
+          {/* Main Content Section */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12 text-left">
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8 mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6 text-center">What is AuraTalk?</h2>
+              <div className="space-y-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
+                <p>
+                  AuraTalk is a revolutionary AI emotional support platform designed to provide you with a safe, private space to express your feelings and thoughts. Our advanced artificial intelligence companion understands your emotional state and responds with empathy, wisdom, and care.
+                </p>
+                <p>
+                  Whether you're feeling overwhelmed, seeking motivation, or simply need someone to listen, AuraTalk adapts to your unique emotional needs. Our personal AI companion uses cutting-edge emotional intelligence technology to provide mental wellness support that's available 24/7.
+                </p>
+                <p>
+                  What makes AuraTalk truly special is our commitment to your privacy. Unlike other platforms, we never save or store your conversations. Every interaction is completely confidential, allowing you to speak freely without any concerns about data privacy or security.
+                </p>
+              </div>
+            </Card>
+
+            {/* Mood Explanations */}
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8 mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6 text-center">Understanding Your Moods</h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Smile className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Pleasant</h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    When you're feeling good, positive, and upbeat, the Pleasant mode celebrates your joy and helps you maintain that wonderful energy. Share your successes, dreams, and happy moments with an AI companion that truly understands your positive emotions.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Heart className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Unpleasant</h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    During difficult times when you're feeling sad, anxious, or overwhelmed, the Unpleasant mode provides compassionate support and understanding. Our AI companion offers comfort, validation, and gentle guidance to help you process challenging emotions.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Brain className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Calm</h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    When you're seeking peace, balance, and mindful reflection, the Calm mode creates a serene space for thoughtful conversation. Perfect for meditation insights, philosophical discussions, or simply finding your center in a busy world.
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Conversation Modes */}
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8 mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6 text-center">Choose Your Conversation Style</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Ear className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Just Listen</h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Sometimes you just need someone to hear you without judgment or advice. Our AI companion provides pure, empathetic listening - acknowledging your feelings and creating a safe space for emotional expression without trying to fix or change anything.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Lightbulb className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Advise</h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    When you're facing challenges and seeking guidance, the Advise mode offers thoughtful, practical solutions. Our AI companion draws from vast knowledge to provide gentle, actionable advice tailored to your specific situation and emotional state.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Zap className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Motivate</h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Need energy and inspiration? The Motivate mode brings enthusiasm, encouragement, and positive reinforcement to help you achieve your goals. Our AI companion becomes your personal cheerleader, boosting your confidence and drive.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Sparkles className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-3">Divine</h3>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Explore deeper meaning and spiritual insights with the Divine mode. Perfect for philosophical conversations, existential questions, and spiritual growth. Our AI companion engages in profound discussions about life's bigger picture and meaning.
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            {/* How It Works */}
+            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8 mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6 text-center">How AuraTalk Works</h2>
+              <div className="space-y-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
+                <p>
+                  <strong>Step 1: Choose Your Mood</strong> - Start by selecting how you're feeling today. This helps our AI companion understand your emotional state and respond appropriately.
+                </p>
+                <p>
+                  <strong>Step 2: Select Conversation Style</strong> - Pick the type of interaction you need: listening, advice, motivation, or spiritual guidance.
+                </p>
+                <p>
+                  <strong>Step 3: Start Talking</strong> - Begin your conversation through text or voice. Our AI adapts to your communication style and emotional needs in real-time.
+                </p>
+                <p>
+                  <strong>Complete Privacy</strong> - Everything you share disappears after your session. No data storage, no conversation logs, no privacy concerns - just pure, confidential emotional support.
+                </p>
+              </div>
+            </Card>
+
+            {/* Support Message */}
+            <Card className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200/50 dark:border-pink-700/50 p-6 sm:p-8 mb-8">
+              <div className="text-center">
+                <Heart className="w-12 h-12 text-pink-500 mx-auto mb-4" />
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200 mb-4">
+                  💛 Support Our Mission
+                </h3>
+                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-6">
+                  AuraTalk is built with love and dedication to provide free, accessible mental wellness support to everyone. If you find value in our AI emotional companion and it helps brighten your day or provides comfort during difficult times, consider supporting our mission.
+                </p>
+                <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400">
+                  Your support helps us keep AuraTalk free, private, and continuously improving to serve those who need emotional support the most. Every contribution, no matter how small, makes a meaningful difference in someone's mental wellness journey.
+                </p>
+              </div>
+            </Card>
           </div>
           
-          {/* Privacy Banner */}
-          <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 max-w-4xl mx-auto mb-8 sm:mb-12">
-            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-              <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
-              <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 dark:text-slate-200">Complete Privacy Guaranteed</h3>
-            </div>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-              "AuraTalk doesn't save what you say. Speak freely — we're here to listen, not to log."
-            </p>
-          </Card>
-
+          {/* Call to Action */}
           <Button onClick={() => setShowAuthModal(true)} size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 sm:px-20 py-6 sm:py-10 text-xl sm:text-3xl rounded-2xl sm:rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 mb-6 sm:mb-8">
             <Heart className="w-6 h-6 sm:w-10 sm:h-10 mr-3 sm:mr-6" />
             Start Your Journey
@@ -190,60 +313,12 @@ function AppContent() {
             onMoodHover={setHoveredMood}
           />
 
-          {/* Conversation Modes Section */}
-          <div className="mt-12 sm:mt-16 max-w-6xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-center text-slate-800 dark:text-slate-200 mb-8">
-              Choose Your Conversation Style
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <Ear className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Just Listen</h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  Pure listening without judgment or advice
-                </p>
-              </Card>
-
-              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Advise</h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  Gentle guidance and practical solutions
-                </p>
-              </Card>
-
-              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Motivate</h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  Energetic encouragement and positivity
-                </p>
-              </Card>
-
-              <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-6 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>
-                <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200 mb-2">Divine</h3>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                  Spiritual and philosophical conversations
-                </p>
-              </Card>
-            </div>
-          </div>
-
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16 mt-12 sm:mt-16">
             <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8 text-center hover:bg-white/60 dark:hover:bg-slate-800/60 transition-all duration-300 hover:scale-105">
               <Brain className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500 mx-auto mb-3 sm:mb-4" />
               <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">AI Emotional Intelligence</h3>
               <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-                Advanced AI that understands and responds to your emotional state with empathy and care.
+                Advanced AI that understands and responds to your emotional state with empathy and care, providing personalized mental wellness support.
               </p>
             </Card>
 
@@ -251,7 +326,7 @@ function AppContent() {
               <Lock className="w-8 h-8 sm:w-12 sm:h-12 text-green-500 mx-auto mb-3 sm:mb-4" />
               <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Zero Data Storage</h3>
               <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-                Your conversations are never saved or stored. Complete privacy and confidentiality guaranteed.
+                Your conversations are never saved or stored. Complete privacy and confidentiality guaranteed for your peace of mind.
               </p>
             </Card>
 
@@ -259,7 +334,7 @@ function AppContent() {
               <Smile className="w-8 h-8 sm:w-12 sm:h-12 text-purple-500 mx-auto mb-3 sm:mb-4" />
               <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2 sm:mb-3">Mood-Adaptive Responses</h3>
               <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-                Personalized conversations that adapt to your current emotional state and needs.
+                Personalized conversations that adapt to your current emotional state and needs, ensuring relevant support every time.
               </p>
             </Card>
           </div>
@@ -283,7 +358,12 @@ function AppContent() {
           )}
 
           {/* Footer */}
-          <Footer onPrivacyClick={() => setCurrentPage('privacy')} onTermsClick={() => setCurrentPage('terms')} />
+          <Footer 
+            onAboutClick={() => setCurrentPage('about')}
+            onContactClick={() => setCurrentPage('contact')}
+            onPrivacyClick={() => setCurrentPage('privacy')} 
+            onTermsClick={() => setCurrentPage('terms')} 
+          />
         </div>
       </div>
 
