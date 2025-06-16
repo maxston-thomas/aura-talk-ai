@@ -66,18 +66,22 @@ const Index = () => {
 
   const handleAboutClick = () => {
     setShowAbout(true);
+    setShowChat(false);
   };
 
   const handleContactClick = () => {
     setShowContact(true);
+    setShowChat(false);
   };
 
   const handlePrivacyClick = () => {
     setShowPrivacy(true);
+    setShowChat(false);
   };
 
   const handleTermsClick = () => {
     setShowTerms(true);
+    setShowChat(false);
   };
 
   const handleBackFromPage = () => {
@@ -85,6 +89,10 @@ const Index = () => {
     setShowContact(false);
     setShowPrivacy(false);
     setShowTerms(false);
+    // If user was in chat before, go back to chat
+    if (selectedMood) {
+      setShowChat(true);
+    }
   };
 
   // Show loading state while checking authentication
@@ -99,38 +107,62 @@ const Index = () => {
     );
   }
 
+  // Show individual pages as overlays
+  if (showAbout) {
+    return <AboutPage onBack={handleBackFromPage} />;
+  }
+
+  if (showContact) {
+    return <ContactPage onBack={handleBackFromPage} />;
+  }
+
+  if (showPrivacy) {
+    return <PrivacyPolicy onBack={handleBackFromPage} />;
+  }
+
+  if (showTerms) {
+    return <TermsConditions onBack={handleBackFromPage} />;
+  }
+
   return (
-    <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-red-400/20 dark:from-pink-600/30 dark:to-red-600/30 rounded-full blur-3xl animate-pulse"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-red-400/20 dark:from-pink-600/30 dark:to-red-600/30 rounded-full blur-3xl animate-pulse"></div>
 
-        <Header />
+      <Header />
 
-        <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 max-w-4xl">
-          {/* Main Content */}
-          {!user ? (
-            <div className="text-center space-y-6">
-              <h1 className="text-4xl sm:text-5xl font-bold text-slate-800 dark:text-slate-200">
-                AuraTalk AI <Sparkles className="inline-block w-8 h-8 sm:w-10 sm:h-10 ml-2 text-yellow-500" />
-              </h1>
-              <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400">
-                Your voice-powered emotional AI companion. Speak freely and feel heard with complete privacy.
-              </p>
-              <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-8 py-3" onClick={() => setShowAuthModal(true)}>
-                Get Started
-              </Button>
-              <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
-            </div>
-          ) : !showChat ? (
-            <MoodSelector onMoodSelect={handleMoodSelect} />
-          ) : (
-            <ChatInterface mood={selectedMood} onBack={handleBackToMoodSelection} />
-          )}
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 max-w-4xl">
+        {/* Main Content */}
+        {!user ? (
+          <div className="text-center space-y-6">
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-800 dark:text-slate-200">
+              AuraTalk AI <Sparkles className="inline-block w-8 h-8 sm:w-10 sm:h-10 ml-2 text-yellow-500" />
+            </h1>
+            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400">
+              Your voice-powered emotional AI companion. Speak freely and feel heard with complete privacy.
+            </p>
+            <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-8 py-3" onClick={() => setShowAuthModal(true)}>
+              Get Started
+            </Button>
+            <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+          </div>
+        ) : !showChat ? (
+          <MoodSelector onMoodSelect={handleMoodSelect} />
+        ) : (
+          <ChatInterface 
+            mood={selectedMood} 
+            onBack={handleBackToMoodSelection}
+            onAboutClick={handleAboutClick}
+            onContactClick={handleContactClick}
+            onPrivacyClick={handlePrivacyClick}
+            onTermsClick={handleTermsClick}
+          />
+        )}
 
-          {/* Footer */}
+        {/* Footer - Only show when not in chat */}
+        {!showChat && (
           <div className="mt-12 sm:mt-16">
             <Footer
               onAboutClick={handleAboutClick}
@@ -139,15 +171,9 @@ const Index = () => {
               onTermsClick={handleTermsClick}
             />
           </div>
-        </div>
+        )}
       </div>
-
-      {/* Conditional Page Rendering - Only show if user is authenticated */}
-      {user && showAbout && <AboutPage onBack={handleBackFromPage} />}
-      {user && showContact && <ContactPage onBack={handleBackFromPage} />}
-      {user && showPrivacy && <PrivacyPolicy onBack={handleBackFromPage} />}
-      {user && showTerms && <TermsConditions onBack={handleBackFromPage} />}
-    </>
+    </div>
   );
 };
 

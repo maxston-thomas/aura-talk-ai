@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import Header from './Header';
 import SupportSection from './SupportSection';
+import Footer from './Footer';
 import { toast } from 'sonner';
 import { aiChatService, ChatMessage } from '@/services/aiChatService';
 import FloatingSupportPanel from './chat/FloatingSupportPanel';
@@ -13,9 +14,20 @@ import ModeSidebar from './chat/ModeSidebar';
 interface ChatInterfaceProps {
   mood: string;
   onBack: () => void;
+  onAboutClick: () => void;
+  onContactClick: () => void;
+  onPrivacyClick: () => void;
+  onTermsClick: () => void;
 }
 
-const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
+const ChatInterface = ({ 
+  mood, 
+  onBack, 
+  onAboutClick, 
+  onContactClick, 
+  onPrivacyClick, 
+  onTermsClick 
+}: ChatInterfaceProps) => {
   const { user } = useAuth();
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -365,6 +377,16 @@ const ChatInterface = ({ mood, onBack }: ChatInterfaceProps) => {
           placeholderText={placeholderText}
           isTyping={isTyping}
         />
+
+        {/* Footer in chat */}
+        <div className="mt-4">
+          <Footer
+            onAboutClick={onAboutClick}
+            onContactClick={onContactClick}
+            onPrivacyClick={onPrivacyClick}
+            onTermsClick={onTermsClick}
+          />
+        </div>
       </div>
     </div>
   );
