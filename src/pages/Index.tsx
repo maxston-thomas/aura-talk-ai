@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
@@ -136,127 +137,157 @@ const Index = () => {
         {/* Main Content */}
         {!user ? (
           <div className="space-y-12">
-            {/* Hero Section */}
-            <div className="text-center space-y-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-                <Sparkles className="w-8 h-8 text-white" />
+            {/* Hero Section - Matching reference image */}
+            <div className="text-center space-y-8 max-w-4xl mx-auto">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse shadow-2xl">
+                <Sparkles className="w-10 h-10 text-white" />
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-800 dark:text-slate-200">
-                AuraTalk AI <Sparkles className="inline-block w-8 h-8 sm:w-10 sm:h-10 ml-2 text-yellow-500" />
-              </h1>
-              <p className="text-lg sm:text-xl lg:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-                Your personal AI companion for emotional support and mental wellness. Experience empathetic conversations with complete privacy and understanding.
-              </p>
-              <div className="space-y-3">
+              
+              <div className="space-y-4">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-800 dark:text-slate-200">
+                  AuraTalk
+                </h1>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl text-slate-600 dark:text-slate-400 font-medium">
+                  Your AI powered Emotional Companion
+                </h2>
+              </div>
+
+              <div className="space-y-4 max-w-3xl mx-auto">
+                <p className="text-lg text-slate-600 dark:text-slate-400 italic">
+                  "Speak freely and feel heard with complete privacy. No conversations saved."
+                </p>
+                <p className="text-lg text-slate-600 dark:text-slate-400 italic">
+                  "A safe space for your thoughts and feelings"
+                </p>
+                <p className="text-lg text-slate-600 dark:text-slate-400 italic">
+                  "Privacy-first emotional support platform"
+                </p>
+              </div>
+
+              {/* Privacy Guarantee */}
+              <div className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 rounded-2xl p-6 max-w-2xl mx-auto">
+                <div className="flex items-center justify-center space-x-3 mb-4">
+                  <Shield className="w-6 h-6 text-green-500" />
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+                    Complete Privacy Guaranteed
+                  </h3>
+                </div>
+                <p className="text-slate-600 dark:text-slate-400">
+                  "AuraTalk doesn't save what you say. Speak freely — we're here to listen, not to log."
+                </p>
+              </div>
+
+              <div className="space-y-4">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg px-12 py-6 text-xl font-semibold" 
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-2xl px-16 py-6 text-xl font-semibold shadow-xl transform hover:scale-105 transition-all duration-200" 
                   onClick={() => setShowAuthModal(true)}
                 >
+                  <Heart className="w-5 h-5 mr-2" />
                   Start Your Journey
                 </Button>
-                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                  Made in Chennai with love by Maxston
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium flex items-center justify-center">
+                  Made with <Heart className="w-4 h-4 mx-1 text-red-500" /> in Chennai by Maxston
                 </p>
               </div>
             </div>
 
-            {/* About Section */}
-            <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8">
-              <div className="text-center space-y-4">
-                <Heart className="w-8 h-8 text-red-500 mx-auto" />
-                <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-200">About AuraTalk AI</h2>
-                <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                  AuraTalk was born from a simple belief: everyone deserves someone to listen. Our AI emotional support companion provides a safe, judgment-free space where you can express your thoughts and feelings freely. Whether you're celebrating life's joys or navigating difficult moments, AuraTalk is here to support your mental wellness journey.
+            {/* What AuraTalk Offers - Enhanced */}
+            <div className="space-y-12">
+              <div className="text-center space-y-6">
+                <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-slate-200">
+                  What AuraTalk Offers
+                </h2>
+                <p className="text-lg text-slate-600 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed">
+                  AuraTalk AI is your personal emotional support companion, designed to understand and respond to your feelings with genuine care and empathy. Our advanced AI technology creates meaningful conversations tailored to your emotional state, providing the support you need whenever you need it. Whether you're looking for someone to listen, need practical advice, want motivation, or seek deeper spiritual conversations, AuraTalk adapts to meet you where you are in your emotional journey.
                 </p>
               </div>
-            </Card>
 
-            {/* What AuraTalk Offers */}
-            <div className="space-y-8">
-              <h2 className="text-3xl sm:text-4xl font-bold text-center text-slate-800 dark:text-slate-200">
-                What AuraTalk Offers
-              </h2>
-              
-              <p className="text-lg text-slate-600 dark:text-slate-400 text-center max-w-4xl mx-auto">
-                AuraTalk AI is your personal emotional support companion, designed to understand and respond to your feelings with genuine care. Our advanced AI technology creates meaningful conversations tailored to your emotional state, providing the support you need whenever you need it. Whether you're looking for someone to listen, need practical advice, want motivation, or seek deeper spiritual conversations, AuraTalk adapts to meet you where you are.
-              </p>
-
-              {/* Mood Selection */}
-              <div className="space-y-6">
-                <h3 className="text-2xl sm:text-3xl font-semibold text-center text-slate-800 dark:text-slate-200">
-                  Choose Your Mood
-                </h3>
-                <p className="text-center text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-                  Start every conversation by sharing how you're feeling. This helps AuraTalk understand your emotional state and respond with the right tone and approach.
-                </p>
+              {/* Mood Selection - Enhanced */}
+              <div className="space-y-8">
+                <div className="text-center space-y-4">
+                  <h3 className="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-slate-200">
+                    Choose Your Mood
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                    Start every conversation by sharing how you're feeling. This helps AuraTalk understand your emotional state and respond with the right tone, approach, and level of support. Our AI adapts its communication style to match your current emotional needs.
+                  </p>
+                </div>
                 
-                <div className="grid md:grid-cols-3 gap-6">
-                  <Card className="bg-green-50/80 dark:bg-green-900/20 backdrop-blur-md border-green-200/50 dark:border-green-800/30 p-6 text-center hover:scale-105 transition-transform">
-                    <Smile className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                    <h4 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-2">Pleasant</h4>
-                    <p className="text-green-600 dark:text-green-300">
-                      Share your joy, excitement, and positive experiences. AuraTalk will celebrate with you and help amplify your good vibes.
+                <div className="grid md:grid-cols-3 gap-8">
+                  <Card className="bg-green-50/80 dark:bg-green-900/20 backdrop-blur-md border-green-200/50 dark:border-green-800/30 p-8 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
+                    <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Smile className="w-8 h-8 text-white" />
+                    </div>
+                    <h4 className="text-2xl font-semibold text-green-700 dark:text-green-400 mb-4">Pleasant</h4>
+                    <p className="text-green-600 dark:text-green-300 leading-relaxed">
+                      Share your joy, excitement, and positive experiences. AuraTalk will celebrate with you, help amplify your good vibes, and encourage you to savor these wonderful moments in your life.
                     </p>
                   </Card>
                   
-                  <Card className="bg-blue-50/80 dark:bg-blue-900/20 backdrop-blur-md border-blue-200/50 dark:border-blue-800/30 p-6 text-center hover:scale-105 transition-transform">
-                    <Frown className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                    <h4 className="text-xl font-semibold text-blue-700 dark:text-blue-400 mb-2">Unpleasant</h4>
-                    <p className="text-blue-600 dark:text-blue-300">
-                      When you're going through tough times, AuraTalk provides comfort, validation, and gentle support to help you navigate difficult emotions.
+                  <Card className="bg-blue-50/80 dark:bg-blue-900/20 backdrop-blur-md border-blue-200/50 dark:border-blue-800/30 p-8 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
+                    <div className="w-16 h-16 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Frown className="w-8 h-8 text-white" />
+                    </div>
+                    <h4 className="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-4">Unpleasant</h4>
+                    <p className="text-blue-600 dark:text-blue-300 leading-relaxed">
+                      When you're going through tough times, AuraTalk provides comfort, validation, and gentle support to help you navigate difficult emotions with care and understanding.
                     </p>
                   </Card>
                   
-                  <Card className="bg-purple-50/80 dark:bg-purple-900/20 backdrop-blur-md border-purple-200/50 dark:border-purple-800/30 p-6 text-center hover:scale-105 transition-transform">
-                    <Minus className="w-12 h-12 text-purple-500 mx-auto mb-4" />
-                    <h4 className="text-xl font-semibold text-purple-700 dark:text-purple-400 mb-2">Calm</h4>
-                    <p className="text-purple-600 dark:text-purple-300">
-                      For peaceful moments of reflection. AuraTalk helps maintain your inner balance and provides thoughtful, serene conversations.
+                  <Card className="bg-purple-50/80 dark:bg-purple-900/20 backdrop-blur-md border-purple-200/50 dark:border-purple-800/30 p-8 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
+                    <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <span className="text-2xl">🧘</span>
+                    </div>
+                    <h4 className="text-2xl font-semibold text-purple-700 dark:text-purple-400 mb-4">Calm</h4>
+                    <p className="text-purple-600 dark:text-purple-300 leading-relaxed">
+                      For peaceful moments of reflection and mindfulness. AuraTalk helps maintain your inner balance and provides thoughtful, serene conversations with wisdom.
                     </p>
                   </Card>
                 </div>
               </div>
 
-              {/* Conversation Modes */}
-              <div className="space-y-6">
-                <h3 className="text-2xl sm:text-3xl font-semibold text-center text-slate-800 dark:text-slate-200">
-                  Conversation Modes
-                </h3>
-                <p className="text-center text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-                  Choose how you want AuraTalk to support you. Each mode offers a different approach to help you process your thoughts and feelings.
-                </p>
+              {/* Conversation Modes - Enhanced */}
+              <div className="space-y-8">
+                <div className="text-center space-y-4">
+                  <h3 className="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-slate-200">
+                    Conversation Modes
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                    Choose how you want AuraTalk to support you. Each mode offers a different approach to help you process your thoughts and feelings, ensuring you get exactly the type of support you need in that moment.
+                  </p>
+                </div>
                 
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform">
+                  <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                     <Ear className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Just Listen</h4>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">
-                      Sometimes you just need someone to hear you. AuraTalk provides a compassionate ear without judgment.
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-3">Just Listen</h4>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                      Sometimes you just need someone to hear you without judgment. AuraTalk provides a compassionate ear and validates your feelings.
                     </p>
                   </Card>
                   
-                  <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform">
+                  <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                     <Lightbulb className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Advise</h4>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">
-                      Get thoughtful guidance and practical suggestions tailored to your specific situation and needs.
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-3">Advise</h4>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                      Get thoughtful guidance and practical suggestions tailored to your specific situation, goals, and challenges you're facing.
                     </p>
                   </Card>
                   
-                  <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform">
+                  <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                     <TrendingUp className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Motivate</h4>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">
-                      Need a boost? AuraTalk energizes and encourages you to reach your goals and overcome challenges.
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-3">Motivate</h4>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                      Need a boost? AuraTalk energizes and encourages you to reach your goals, overcome challenges, and unlock your potential.
                     </p>
                   </Card>
                   
-                  <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform">
+                  <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                     <Infinity className="w-12 h-12 text-purple-500 mx-auto mb-4" />
-                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Divine</h4>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">
-                      Explore deeper spiritual conversations and meaningful questions about life, purpose, and connection.
+                    <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-3">Divine</h4>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                      Explore deeper spiritual conversations and meaningful questions about life, purpose, connection, and your place in the universe.
                     </p>
                   </Card>
                 </div>
@@ -265,35 +296,35 @@ const Index = () => {
 
             {/* How It Works */}
             <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 sm:p-8">
-              <h3 className="text-2xl sm:text-3xl font-semibold text-center text-slate-800 dark:text-slate-200 mb-6">
+              <h3 className="text-2xl sm:text-3xl font-semibold text-center text-slate-800 dark:text-slate-200 mb-8">
                 How AuraTalk Works
               </h3>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="text-center space-y-3">
-                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto">
-                    <span className="text-white font-bold">1</span>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                    <span className="text-white font-bold text-xl">1</span>
                   </div>
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">Choose Your Mood</h4>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    Start by selecting how you're feeling: Pleasant, Unpleasant, or Calm.
+                  <h4 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Choose Your Mood</h4>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Start by selecting how you're feeling: Pleasant, Unpleasant, or Calm. This helps AuraTalk understand your emotional state.
                   </p>
                 </div>
-                <div className="text-center space-y-3">
-                  <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto">
-                    <span className="text-white font-bold">2</span>
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                    <span className="text-white font-bold text-xl">2</span>
                   </div>
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">Pick a Mode</h4>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    Choose how you want AuraTalk to respond: Listen, Advise, Motivate, or Divine.
+                  <h4 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Pick a Mode</h4>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Choose how you want AuraTalk to respond: Listen, Advise, Motivate, or Divine - each offering unique support.
                   </p>
                 </div>
-                <div className="text-center space-y-3">
-                  <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center mx-auto">
-                    <span className="text-white font-bold">3</span>
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                    <span className="text-white font-bold text-xl">3</span>
                   </div>
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-200">Start Talking</h4>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    Share your thoughts and feelings. AuraTalk listens and responds with empathy.
+                  <h4 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Start Talking</h4>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Share your thoughts and feelings openly. AuraTalk listens with empathy and responds with genuine care and understanding.
                   </p>
                 </div>
               </div>
@@ -306,7 +337,7 @@ const Index = () => {
               </h2>
               
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6">
+                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 hover:scale-105 transition-transform duration-300">
                   <Shield className="w-8 h-8 text-blue-500 mb-4" />
                   <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">100% Private</h4>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">
@@ -314,7 +345,7 @@ const Index = () => {
                   </p>
                 </Card>
                 
-                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6">
+                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 hover:scale-105 transition-transform duration-300">
                   <Heart className="w-8 h-8 text-red-500 mb-4" />
                   <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Empathetic AI</h4>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">
@@ -322,7 +353,7 @@ const Index = () => {
                   </p>
                 </Card>
                 
-                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6">
+                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 hover:scale-105 transition-transform duration-300">
                   <Zap className="w-8 h-8 text-yellow-500 mb-4" />
                   <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Available 24/7</h4>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">
@@ -330,7 +361,7 @@ const Index = () => {
                   </p>
                 </Card>
                 
-                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6">
+                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 hover:scale-105 transition-transform duration-300">
                   <Users className="w-8 h-8 text-green-500 mb-4" />
                   <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Non-Judgmental</h4>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">
@@ -338,7 +369,7 @@ const Index = () => {
                   </p>
                 </Card>
                 
-                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6">
+                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 hover:scale-105 transition-transform duration-300">
                   <Brain className="w-8 h-8 text-purple-500 mb-4" />
                   <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Adaptive Learning</h4>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">
@@ -346,7 +377,7 @@ const Index = () => {
                   </p>
                 </Card>
                 
-                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6">
+                <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 hover:scale-105 transition-transform duration-300">
                   <Star className="w-8 h-8 text-orange-500 mb-4" />
                   <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">Free to Use</h4>
                   <p className="text-slate-600 dark:text-slate-400 text-sm">

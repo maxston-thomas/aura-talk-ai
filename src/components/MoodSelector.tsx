@@ -32,8 +32,8 @@ const MoodSelector = ({ onMoodSelect, onMoodHover }: MoodSelectorProps) => {
     {
       id: 'calm',
       name: 'Calm',
-      description: 'Peaceful and balanced',
-      icon: Heart,
+      description: 'Peaceful and balanced with wisdom',
+      emoji: '🧘',
       gradient: 'from-blue-400 to-indigo-500',
       bgGradient: 'from-blue-50 to-indigo-50',
       hoverBg: 'mood-calm'
@@ -77,7 +77,11 @@ const MoodSelector = ({ onMoodSelect, onMoodHover }: MoodSelectorProps) => {
             >
               <div className={`p-6 text-center bg-gradient-to-br ${mood.bgGradient} dark:from-slate-800 dark:to-slate-700 rounded-lg transition-colors duration-300`}>
                 <div className={`w-16 h-16 bg-gradient-to-r ${mood.gradient} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                  <IconComponent className="w-8 h-8 text-white" />
+                  {mood.emoji ? (
+                    <span className="text-2xl">{mood.emoji}</span>
+                  ) : (
+                    <IconComponent className="w-8 h-8 text-white" />
+                  )}
                 </div>
                 <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">
                   {mood.name}
