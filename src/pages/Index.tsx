@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
@@ -11,6 +10,8 @@ import AboutPage from '@/components/AboutPage';
 import ContactPage from '@/components/ContactPage';
 import PrivacyPolicy from '@/components/PrivacyPolicy';
 import TermsConditions from '@/components/TermsConditions';
+import SupportSection from '@/components/SupportSection';
+import SupportPopup from '@/components/SupportPopup';
 import { Heart, Brain, MessageCircle, Shield, Zap, Users, Star, Sparkles, Smile, Frown, Minus, Ear, Lightbulb, TrendingUp, Infinity } from 'lucide-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,8 @@ const Index = () => {
   const [showContact, setShowContact] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
+  const [showSupportPopup, setShowSupportPopup] = useState(false);
+  const [isFirstMoodSelection, setIsFirstMoodSelection] = useState(true);
 
   useEffect(() => {
     // Load Google AdSense script
@@ -51,11 +54,24 @@ const Index = () => {
       setShowContact(false);
       setShowPrivacy(false);
       setShowTerms(false);
+      setIsFirstMoodSelection(true);
     }
   }, [user, loading]);
 
   const handleMoodSelect = (mood: string) => {
     setSelectedMood(mood);
+    
+    // Show support popup only on first mood selection
+    if (isFirstMoodSelection) {
+      setShowSupportPopup(true);
+      setIsFirstMoodSelection(false);
+    } else {
+      setShowChat(true);
+    }
+  };
+
+  const handleSupportPopupClose = () => {
+    setShowSupportPopup(false);
     setShowChat(true);
   };
 
@@ -387,24 +403,34 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Support Message */}
-            <Card className="bg-gradient-to-r from-blue-50/80 to-purple-50/80 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-md border-blue-200/50 dark:border-blue-800/30 p-6 sm:p-8 text-center">
-              <Heart className="w-12 h-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-semibold text-slate-800 dark:text-slate-200 mb-4">
-                Help Us Continue This Mission
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-2xl mx-auto">
-                AuraTalk AI is built with love and dedication to support mental wellness for everyone. If you find value in our AI emotional support companion, consider supporting our mission to make compassionate AI accessible to all. Your support helps us improve and maintain this free mental wellness resource.
+            {/* Support Message - Big Button */}
+            <div className="space-y-4">
+              <Button 
+                size="lg" 
+                className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-2xl px-16 py-6 text-xl font-semibold shadow-xl transform hover:scale-105 transition-all duration-200" 
+                onClick={() => setShowSupportPopup(true)}
+              >
+                <Heart className="w-5 h-5 mr-2" />
+                Support AuraTalk
+              </Button>
+              <p className="text-center text-sm text-slate-500 dark:text-slate-400">
+                Help us continue providing free emotional support to everyone
               </p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Together, we can create a world where everyone has access to emotional support and understanding.
-              </p>
-            </Card>
+            </div>
 
             <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
           </div>
-        ) : !showChat ? (
-          <MoodSelector onMoodSelect={handleMoodSelect} />
+        ) : !showChat && !showSupportPopup ? (
+          <div className="space-y-12">
+            <MoodSelector onMoodSelect={handleMoodSelect} />
+            
+            {/* Support Section below moods */}
+            <div className="mt-16">
+              <SupportSection />
+            </div>
+          </div>
+        ) : showSupportPopup ? (
+          <SupportPopup onClose={handleSupportPopupClose} />
         ) : (
           <ChatInterface 
             mood={selectedMood} 
@@ -416,8 +442,8 @@ const Index = () => {
           />
         )}
 
-        {/* Footer - Only show when not in chat */}
-        {!showChat && (
+        {/* Footer - Only show when not in chat and not showing support popup */}
+        {!showChat && !showSupportPopup && (
           <div className="mt-12 sm:mt-16">
             <Footer
               onAboutClick={handleAboutClick}
