@@ -11,7 +11,6 @@ import ContactPage from '@/components/ContactPage';
 import PrivacyPolicy from '@/components/PrivacyPolicy';
 import TermsConditions from '@/components/TermsConditions';
 import SupportSection from '@/components/SupportSection';
-import SupportPopup from '@/components/SupportPopup';
 import { Heart, Brain, MessageCircle, Shield, Zap, Users, Star, Sparkles, Smile, Frown, Minus, Ear, Lightbulb, TrendingUp, Infinity } from 'lucide-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,8 +24,7 @@ const Index = () => {
   const [showContact, setShowContact] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
-  const [showSupportPopup, setShowSupportPopup] = useState(false);
-  const [isFirstMoodSelection, setIsFirstMoodSelection] = useState(true);
+  const [showSupportSection, setShowSupportSection] = useState(false);
 
   useEffect(() => {
     // Load Google AdSense script
@@ -54,24 +52,12 @@ const Index = () => {
       setShowContact(false);
       setShowPrivacy(false);
       setShowTerms(false);
-      setIsFirstMoodSelection(true);
+      setShowSupportSection(false);
     }
   }, [user, loading]);
 
   const handleMoodSelect = (mood: string) => {
     setSelectedMood(mood);
-    
-    // Show support popup only on first mood selection
-    if (isFirstMoodSelection) {
-      setShowSupportPopup(true);
-      setIsFirstMoodSelection(false);
-    } else {
-      setShowChat(true);
-    }
-  };
-
-  const handleSupportPopupClose = () => {
-    setShowSupportPopup(false);
     setShowChat(true);
   };
 
@@ -83,20 +69,33 @@ const Index = () => {
   const handleAboutClick = () => {
     setShowAbout(true);
     setShowChat(false);
+    setShowSupportSection(false);
   };
 
   const handleContactClick = () => {
     setShowContact(true);
     setShowChat(false);
+    setShowSupportSection(false);
   };
 
   const handlePrivacyClick = () => {
     setShowPrivacy(true);
     setShowChat(false);
+    setShowSupportSection(false);
   };
 
   const handleTermsClick = () => {
     setShowTerms(true);
+    setShowChat(false);
+    setShowSupportSection(false);
+  };
+
+  const handleSupportClick = () => {
+    setShowSupportSection(true);
+    setShowAbout(false);
+    setShowContact(false);
+    setShowPrivacy(false);
+    setShowTerms(false);
     setShowChat(false);
   };
 
@@ -105,6 +104,7 @@ const Index = () => {
     setShowContact(false);
     setShowPrivacy(false);
     setShowTerms(false);
+    setShowSupportSection(false);
     // If user was in chat before, go back to chat
     if (selectedMood) {
       setShowChat(true);
@@ -403,12 +403,12 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Support Message - Big Button */}
-            <div className="space-y-4">
+            {/* Support Button - Smaller size */}
+            <div className="text-center space-y-4">
               <Button 
                 size="lg" 
-                className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-2xl px-16 py-6 text-xl font-semibold shadow-xl transform hover:scale-105 transition-all duration-200" 
-                onClick={() => setShowSupportPopup(true)}
+                className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-2xl px-12 py-4 text-lg font-semibold shadow-xl transform hover:scale-105 transition-all duration-200" 
+                onClick={handleSupportClick}
               >
                 <Heart className="w-5 h-5 mr-2" />
                 Support AuraTalk
@@ -420,7 +420,7 @@ const Index = () => {
 
             <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
           </div>
-        ) : !showChat && !showSupportPopup ? (
+        ) : !showChat ? (
           <div className="space-y-12">
             <MoodSelector onMoodSelect={handleMoodSelect} />
             
@@ -429,8 +429,6 @@ const Index = () => {
               <SupportSection />
             </div>
           </div>
-        ) : showSupportPopup ? (
-          <SupportPopup onClose={handleSupportPopupClose} />
         ) : (
           <ChatInterface 
             mood={selectedMood} 
@@ -442,8 +440,25 @@ const Index = () => {
           />
         )}
 
-        {/* Footer - Only show when not in chat and not showing support popup */}
-        {!showChat && !showSupportPopup && (
+        {/* Support Section Display */}
+        {showSupportSection && (
+          <div className="mt-12 max-w-2xl mx-auto">
+            <Card className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border-white/40 dark:border-slate-700/40 p-8 relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleBackFromPage}
+                className="absolute top-4 right-4 hover:bg-white/20 dark:hover:bg-slate-700/20"
+              >
+                ✕
+              </Button>
+              <SupportSection />
+            </Card>
+          </div>
+        )}
+
+        {/* Footer - Show when not in chat and not showing support section */}
+        {!showChat && !showSupportSection && (
           <div className="mt-12 sm:mt-16">
             <Footer
               onAboutClick={handleAboutClick}
