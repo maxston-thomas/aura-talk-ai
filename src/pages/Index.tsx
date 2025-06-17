@@ -147,9 +147,18 @@ const Index = () => {
               <p className="text-lg sm:text-xl lg:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
                 Your personal AI companion for emotional support and mental wellness. Experience empathetic conversations with complete privacy and understanding.
               </p>
-              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-full px-8 py-4 text-lg" onClick={() => setShowAuthModal(true)}>
-                Start Your Journey
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg px-12 py-6 text-xl font-semibold" 
+                  onClick={() => setShowAuthModal(true)}
+                >
+                  Start Your Journey
+                </Button>
+                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                  Made in Chennai with love by Maxston
+                </p>
+              </div>
             </div>
 
             {/* About Section */}
