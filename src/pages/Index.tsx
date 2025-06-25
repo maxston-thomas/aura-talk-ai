@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
@@ -109,6 +110,48 @@ const Index = () => {
     if (selectedMood) {
       setShowChat(true);
     }
+  };
+
+  // Adsterra Banner Ad Component
+  const AdsterraBannerAd = () => {
+    useEffect(() => {
+      // Load Adsterra banner ad script
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.innerHTML = `
+        atOptions = {
+          'key' : '739eb322f08544cb2405be0274b42be3',
+          'format' : 'iframe',
+          'height' : 60,
+          'width' : 468,
+          'params' : {}
+        };
+      `;
+      document.head.appendChild(script);
+
+      const invokeScript = document.createElement('script');
+      invokeScript.type = 'text/javascript';
+      invokeScript.src = '//www.highperformanceformat.com/739eb322f08544cb2405be0274b42be3/invoke.js';
+      document.head.appendChild(invokeScript);
+
+      return () => {
+        // Cleanup scripts on unmount
+        const existingScript = document.querySelector('script[src*="highperformanceformat.com"]');
+        if (existingScript && existingScript.parentNode) {
+          existingScript.parentNode.removeChild(existingScript);
+        }
+      };
+    }, []);
+
+    return (
+      <div className="text-center my-8 px-4">
+        <div className="inline-block max-w-full overflow-hidden">
+          <div id="adsterra-banner-ad" className="mx-auto" style={{ maxWidth: '468px', height: '60px' }}>
+            {/* Ad will be inserted here by the script */}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // Show loading state while checking authentication
@@ -406,17 +449,20 @@ const Index = () => {
             {/* Support Button - Smaller size */}
             <div className="text-center space-y-4">
               <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-2xl px-12 py-4 text-lg font-semibold shadow-xl transform hover:scale-105 transition-all duration-200" 
+                size="default" 
+                className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-2xl px-8 py-3 text-base font-semibold shadow-xl transform hover:scale-105 transition-all duration-200" 
                 onClick={handleSupportClick}
               >
-                <Heart className="w-5 h-5 mr-2" />
+                <Heart className="w-4 h-4 mr-2" />
                 Support AuraTalk
               </Button>
               <p className="text-center text-sm text-slate-500 dark:text-slate-400">
                 Help us continue providing free emotional support to everyone
               </p>
             </div>
+
+            {/* Adsterra Banner Ad */}
+            <AdsterraBannerAd />
 
             <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
           </div>
@@ -428,16 +474,23 @@ const Index = () => {
             <div className="mt-16">
               <SupportSection />
             </div>
+
+            {/* Adsterra Banner Ad */}
+            <AdsterraBannerAd />
           </div>
         ) : (
-          <ChatInterface 
-            mood={selectedMood} 
-            onBack={handleBackToMoodSelection}
-            onAboutClick={handleAboutClick}
-            onContactClick={handleContactClick}
-            onPrivacyClick={handlePrivacyClick}
-            onTermsClick={handleTermsClick}
-          />
+          <>
+            <ChatInterface 
+              mood={selectedMood} 
+              onBack={handleBackToMoodSelection}
+              onAboutClick={handleAboutClick}
+              onContactClick={handleContactClick}
+              onPrivacyClick={handlePrivacyClick}
+              onTermsClick={handleTermsClick}
+            />
+            {/* Adsterra Banner Ad */}
+            <AdsterraBannerAd />
+          </>
         )}
 
         {/* Support Section Display */}
