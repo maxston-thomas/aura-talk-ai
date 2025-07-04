@@ -154,8 +154,9 @@ const ChatInterface = ({
   };
 
   useEffect(() => {
+    // Only scroll when new messages are added, not during typing animation
     scrollToBottom();
-  }, [messages, typingText]);
+  }, [messages]);
 
   // ... keep existing code (useEffect for initial message)
 
