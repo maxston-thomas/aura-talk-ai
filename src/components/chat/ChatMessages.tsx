@@ -22,8 +22,8 @@ const ChatMessages = forwardRef<HTMLDivElement, ChatMessagesProps>(({
     <>
       {/* Chat Messages */}
       <Card className="bg-white/40 dark:bg-slate-800/80 backdrop-blur-md border-white/30 dark:border-slate-700/40 mb-4 flex-1 overflow-hidden shadow-md">
-        <div className="p-3 sm:p-6 h-full overflow-y-auto">
-          <div className="space-y-3 sm:space-y-4">
+        <div className="p-3 sm:p-6 h-full overflow-y-auto scroll-smooth" style={{ scrollBehavior: 'smooth' }}>
+          <div className="space-y-3 sm:space-y-4 min-h-0">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -31,13 +31,13 @@ const ChatMessages = forwardRef<HTMLDivElement, ChatMessagesProps>(({
               >
                 <div className="flex items-start gap-1 sm:gap-2 max-w-[85%] sm:max-w-xs lg:max-w-md">
                   <div
-                    className={`px-3 sm:px-4 py-2 sm:py-3 rounded-2xl ${
+                    className={`px-3 sm:px-4 py-2 sm:py-3 rounded-2xl break-words ${
                       message.sender === 'user'
                         ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
                         : 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-slate-800 dark:text-slate-100 shadow'
                     }`}
                   >
-                    <p className="text-xs sm:text-sm leading-relaxed">
+                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
                       {message.content}
                     </p>
                     <p className={`text-xs mt-1 ${
@@ -62,14 +62,14 @@ const ChatMessages = forwardRef<HTMLDivElement, ChatMessagesProps>(({
               </div>
             )}
             
-            <div ref={messagesEndRef} />
+            <div ref={messagesEndRef} className="h-1" />
           </div>
         </div>
       </Card>
 
       {/* Loading Indicator with Cancel Button */}
       {isTyping && (
-        <div className="flex justify-center items-center mb-3">
+        <div className="flex justify-center items-center mb-3 sticky bottom-0">
           <div className="flex items-center gap-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/30 dark:border-slate-700/30 rounded-full px-4 py-2">
             <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
             <span className="text-sm text-slate-600 dark:text-slate-400">AI is working...</span>

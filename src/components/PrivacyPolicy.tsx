@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -84,7 +85,12 @@ const PrivacyPolicy = ({ onBack }: PrivacyPolicyProps) => {
             <p className="mb-4">Please do not spam or flood the conversation bot with excessive messages.</p>
             <p className="mb-6">AuraTalk is designed for meaningful emotional support conversations, not for testing limits or generating unnecessary traffic.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">7. Contact Us</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">7. 📢 Advertising</h3>
+            <p className="mb-4">AuraTalk displays non-intrusive ads served by Adsterra to help keep the platform free and accessible. Adsterra may use cookies or device data to serve relevant ads.</p>
+            <p className="mb-4">We do not control or access this data. For more information, please refer to <a href="https://adsterra.com/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 underline">Adsterra's Privacy Policy</a>.</p>
+            <p className="mb-6">You can also choose to use an ad blocker if you prefer a cleaner experience.</p>
+
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">8. Contact Us</h3>
             <p className="mb-4">If you have questions, reach us at auratalkai@gmail.com.</p>
           </div>
         </Card>

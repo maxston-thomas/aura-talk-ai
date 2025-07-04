@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -76,13 +77,22 @@ const TermsConditions = ({ onBack }: TermsConditionsProps) => {
             <p className="mb-4">Donations are optional and non-refundable.</p>
             <p className="mb-6">Supporting us does not unlock extra features; it helps sustain the project.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">5. Limitation of Liability</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">5. 📜 Third-Party Advertisements</h3>
+            <p className="mb-4">AuraTalk may display advertisements served by third-party providers such as Adsterra. These ads help support the continued development and availability of our services. Please be aware that these third-party services may collect certain technical information (such as device type, IP address, or browser data) to deliver relevant ads and measure their performance.</p>
+            
+            <h4 className="text-base sm:text-lg font-semibold mb-2">No Endorsement or Responsibility</h4>
+            <p className="mb-4">AuraTalk does not control the content or practices of third-party advertisers. Displaying these ads does not imply endorsement. Any interaction with third-party content is solely between you and the external service provider, and AuraTalk is not responsible for any loss or issues that may arise from such interactions.</p>
+            
+            <h4 className="text-base sm:text-lg font-semibold mb-2">Data Use and Privacy</h4>
+            <p className="mb-6">Your conversations and personal messages are never stored or shared with any third parties, including advertisers. Ads are served without access to your private interactions, in line with our strict privacy-first approach. You can learn more about Adsterra's data practices at <a href="https://adsterra.com/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 underline">https://adsterra.com/privacy-policy/</a>.</p>
+
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">6. Limitation of Liability</h3>
             <p className="mb-6">We are not liable for any damages arising from the use of this app.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">6. Changes to Terms</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">7. Changes to Terms</h3>
             <p className="mb-6">We may update these terms occasionally. Continued use means you agree to the changes.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">7. Contact</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">8. Contact</h3>
             <p className="mb-4">If you have any concerns, contact us at auratalkai@gmail.com.</p>
           </div>
         </Card>

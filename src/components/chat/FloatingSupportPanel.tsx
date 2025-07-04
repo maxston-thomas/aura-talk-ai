@@ -19,9 +19,9 @@ const FloatingSupportPanel = ({ show, onClose }: FloatingSupportPanelProps) => {
           variant="ghost"
           size="sm"
           onClick={onClose}
-          className="absolute -top-2 -right-2 z-10 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-full p-2 shadow-lg"
+          className="absolute -top-3 -right-3 z-10 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 rounded-full p-3 shadow-lg w-10 h-10"
         >
-          <X className="w-4 h-4" />
+          <X className="w-6 h-6" />
         </Button>
         <SupportSection />
       </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthModal from '@/components/AuthModal';
@@ -112,7 +111,7 @@ const Index = () => {
     }
   };
 
-  // Adsterra Banner Ad Component
+  // Adsterra Banner Ad Component - Made less intrusive
   const AdsterraBannerAd = () => {
     useEffect(() => {
       // Load Adsterra banner ad script
@@ -144,7 +143,7 @@ const Index = () => {
     }, []);
 
     return (
-      <div className="text-center my-8 px-4">
+      <div className="text-center mt-20 mb-8 px-4 opacity-70 hover:opacity-100 transition-opacity">
         <div className="inline-block max-w-full overflow-hidden">
           <div id="adsterra-banner-ad" className="mx-auto" style={{ maxWidth: '468px', height: '60px' }}>
             {/* Ad will be inserted here by the script */}
@@ -461,7 +460,10 @@ const Index = () => {
               </p>
             </div>
 
-            {/* Adsterra Banner Ad */}
+            {/* Spacer before ads */}
+            <div className="h-16"></div>
+
+            {/* Adsterra Banner Ad - Less intrusive placement */}
             <AdsterraBannerAd />
 
             <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
@@ -475,7 +477,10 @@ const Index = () => {
               <SupportSection />
             </div>
 
-            {/* Adsterra Banner Ad */}
+            {/* Spacer before ads */}
+            <div className="h-16"></div>
+
+            {/* Adsterra Banner Ad - Less intrusive placement */}
             <AdsterraBannerAd />
           </div>
         ) : (
@@ -488,7 +493,10 @@ const Index = () => {
               onPrivacyClick={handlePrivacyClick}
               onTermsClick={handleTermsClick}
             />
-            {/* Adsterra Banner Ad */}
+            {/* Spacer before ads */}
+            <div className="h-16"></div>
+            
+            {/* Adsterra Banner Ad - Less intrusive placement */}
             <AdsterraBannerAd />
           </>
         )}

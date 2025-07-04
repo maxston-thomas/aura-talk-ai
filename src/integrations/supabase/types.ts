@@ -42,28 +42,22 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string | null
-          discount_percentage: number | null
           email: string
           id: string
-          is_first_100_user: boolean | null
           launch_user_number: number | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          discount_percentage?: number | null
           email: string
           id: string
-          is_first_100_user?: boolean | null
           launch_user_number?: number | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          discount_percentage?: number | null
           email?: string
           id?: string
-          is_first_100_user?: boolean | null
           launch_user_number?: number | null
           updated_at?: string | null
         }
