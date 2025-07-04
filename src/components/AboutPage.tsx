@@ -4,12 +4,12 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Heart, Brain, Shield, Users } from 'lucide-react';
 import Header from './Header';
 import Footer from './Footer';
-
 interface AboutPageProps {
   onBack: () => void;
 }
-
-const AboutPage = ({ onBack }: AboutPageProps) => {
+const AboutPage = ({
+  onBack
+}: AboutPageProps) => {
   useEffect(() => {
     // Load Google AdSense script
     const script = document.createElement('script');
@@ -17,7 +17,6 @@ const AboutPage = ({ onBack }: AboutPageProps) => {
     script.async = true;
     script.crossOrigin = 'anonymous';
     document.head.appendChild(script);
-
     return () => {
       // Cleanup script on unmount
       const existingScript = document.querySelector('script[src*="adsbygoogle"]');
@@ -26,9 +25,7 @@ const AboutPage = ({ onBack }: AboutPageProps) => {
       }
     };
   }, []);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
+  return <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
       <Header />
       
       {/* Background Effects */}
@@ -37,12 +34,7 @@ const AboutPage = ({ onBack }: AboutPageProps) => {
       <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 max-w-4xl">
         {/* Header */}
         <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onBack}
-            className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full p-2"
-          >
+          <Button variant="ghost" size="sm" onClick={onBack} className="hover:bg-white/30 dark:hover:bg-slate-800/30 rounded-full p-2">
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <div className="flex items-center gap-2 sm:gap-3">
@@ -54,7 +46,7 @@ const AboutPage = ({ onBack }: AboutPageProps) => {
         <Card className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-4 sm:p-8">
           <div className="prose prose-slate dark:prose-invert max-w-none">
             <h2 className="text-xl sm:text-2xl font-semibold mb-4">🧠 AuraTalk: Your AI Companion</h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">Crafted with ❤️ by Max & Team</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">Crafted with ❤️ by Maxston Thomas.</p>
             
             <p className="mb-6">AuraTalk is designed to be a safe space where you can freely express your thoughts and feelings. We leverage the power of AI to provide supportive conversations, offering a unique blend of empathy and understanding.</p>
 
@@ -80,16 +72,9 @@ const AboutPage = ({ onBack }: AboutPageProps) => {
         </Card>
 
         <div className="mt-12 sm:mt-16">
-          <Footer 
-            onAboutClick={() => {}} 
-            onContactClick={() => {}} 
-            onPrivacyClick={() => {}} 
-            onTermsClick={() => {}} 
-          />
+          <Footer onAboutClick={() => {}} onContactClick={() => {}} onPrivacyClick={() => {}} onTermsClick={() => {}} />
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AboutPage;
