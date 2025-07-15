@@ -48,6 +48,7 @@ const ChatInterface = ({
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const supportPanelTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Check if support panel should be shown based on first-time chat and 3-day cooldown
   useEffect(() => {
@@ -61,6 +62,11 @@ const ChatInterface = ({
         setShowFloatingSupportPanel(true);
         setHasShownSupportPanel(true);
         localStorage.setItem(lastShownKey, Date.now().toString());
+        
+        // Auto-close after 5 seconds
+        supportPanelTimerRef.current = setTimeout(() => {
+          setShowFloatingSupportPanel(false);
+        }, 5000);
       }
     };
 
@@ -304,6 +310,9 @@ const ChatInterface = ({
   };
 
   const closeFloatingSupportPanel = () => {
+    if (supportPanelTimerRef.current) {
+      clearTimeout(supportPanelTimerRef.current);
+    }
     setShowFloatingSupportPanel(false);
   };
 
@@ -318,6 +327,9 @@ const ChatInterface = ({
       }
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
+      }
+      if (supportPanelTimerRef.current) {
+        clearTimeout(supportPanelTimerRef.current);
       }
     };
   }, []);
