@@ -11,22 +11,6 @@ interface PrivacyPolicyProps {
 }
 
 const PrivacyPolicy = ({ onBack }: PrivacyPolicyProps) => {
-  useEffect(() => {
-    // Load Google AdSense script
-    const script = document.createElement('script');
-    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7779472086690894';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup script on unmount
-      const existingScript = document.querySelector('script[src*="adsbygoogle"]');
-      if (existingScript && existingScript.parentNode) {
-        existingScript.parentNode.removeChild(existingScript);
-      }
-    };
-  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
@@ -85,12 +69,7 @@ const PrivacyPolicy = ({ onBack }: PrivacyPolicyProps) => {
             <p className="mb-4">Please do not spam or flood the conversation bot with excessive messages.</p>
             <p className="mb-6">AuraTalk is designed for meaningful emotional support conversations, not for testing limits or generating unnecessary traffic.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">7. 📢 Advertising</h3>
-            <p className="mb-4">AuraTalk displays non-intrusive ads served by Adsterra to help keep the platform free and accessible. Adsterra may use cookies or device data to serve relevant ads.</p>
-            <p className="mb-4">We do not control or access this data. For more information, please refer to <a href="https://adsterra.com/privacy-policy/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-600 underline">Adsterra's Privacy Policy</a>.</p>
-            <p className="mb-6">You can also choose to use an ad blocker if you prefer a cleaner experience.</p>
-
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">8. Contact Us</h3>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">7. Contact Us</h3>
             <p className="mb-4">If you have questions, reach us at auratalkai@gmail.com.</p>
           </div>
         </Card>

@@ -26,22 +26,6 @@ const Index = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [showSupportSection, setShowSupportSection] = useState(false);
 
-  useEffect(() => {
-    // Load Google AdSense script
-    const script = document.createElement('script');
-    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7779472086690894';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup script on unmount
-      const existingScript = document.querySelector('script[src*="adsbygoogle"]');
-      if (existingScript && existingScript.parentNode) {
-        existingScript.parentNode.removeChild(existingScript);
-      }
-    };
-  }, []);
 
   // Reset all states when user logs out
   useEffect(() => {
@@ -111,47 +95,6 @@ const Index = () => {
     }
   };
 
-  // Adsterra Banner Ad Component - Made less intrusive
-  const AdsterraBannerAd = () => {
-    useEffect(() => {
-      // Load Adsterra banner ad script
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.innerHTML = `
-        atOptions = {
-          'key' : '739eb322f08544cb2405be0274b42be3',
-          'format' : 'iframe',
-          'height' : 60,
-          'width' : 468,
-          'params' : {}
-        };
-      `;
-      document.head.appendChild(script);
-
-      const invokeScript = document.createElement('script');
-      invokeScript.type = 'text/javascript';
-      invokeScript.src = '//www.highperformanceformat.com/739eb322f08544cb2405be0274b42be3/invoke.js';
-      document.head.appendChild(invokeScript);
-
-      return () => {
-        // Cleanup scripts on unmount
-        const existingScript = document.querySelector('script[src*="highperformanceformat.com"]');
-        if (existingScript && existingScript.parentNode) {
-          existingScript.parentNode.removeChild(existingScript);
-        }
-      };
-    }, []);
-
-    return (
-      <div className="text-center mt-20 mb-8 px-4 opacity-70 hover:opacity-100 transition-opacity">
-        <div className="inline-block max-w-full overflow-hidden">
-          <div id="adsterra-banner-ad" className="mx-auto" style={{ maxWidth: '468px', height: '60px' }}>
-            {/* Ad will be inserted here by the script */}
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   // Show loading state while checking authentication
   if (loading) {
@@ -460,12 +403,6 @@ const Index = () => {
               </p>
             </div>
 
-            {/* Spacer before ads */}
-            <div className="h-16"></div>
-
-            {/* Adsterra Banner Ad - Less intrusive placement */}
-            <AdsterraBannerAd />
-
             <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
           </div>
         ) : !showChat ? (
@@ -477,11 +414,6 @@ const Index = () => {
               <SupportSection />
             </div>
 
-            {/* Spacer before ads */}
-            <div className="h-16"></div>
-
-            {/* Adsterra Banner Ad - Less intrusive placement */}
-            <AdsterraBannerAd />
           </div>
         ) : (
           <>
@@ -493,11 +425,6 @@ const Index = () => {
               onPrivacyClick={handlePrivacyClick}
               onTermsClick={handleTermsClick}
             />
-            {/* Spacer before ads */}
-            <div className="h-16"></div>
-            
-            {/* Adsterra Banner Ad - Less intrusive placement */}
-            <AdsterraBannerAd />
           </>
         )}
 
