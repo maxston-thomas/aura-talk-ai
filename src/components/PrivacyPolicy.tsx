@@ -52,9 +52,10 @@ const PrivacyPolicy = ({ onBack }: PrivacyPolicyProps) => {
             <p className="mb-4">We do not use cookies, tracking pixels, or third-party analytics.</p>
             <p className="mb-6">Your usage is never monitored or analyzed.</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">3. Voluntary Support Only</h3>
-            <p className="mb-4">AuraTalk is completely free.</p>
-            <p className="mb-6">We offer a "Support Us" option if you'd like to help via donation (e.g., UPI, PayPal).</p>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">3. Subscription Services</h3>
+            <p className="mb-4">AuraTalk operates as a premium subscription service at ₹199/month.</p>
+            <p className="mb-4">We offer limited trial access with 5 free interactions for evaluation.</p>
+            <p className="mb-6">Subscription and payment data is processed securely through third-party payment providers.</p>
 
             <h3 className="text-lg sm:text-xl font-semibold mb-3">4. Email Communication</h3>
             <p className="mb-4">If you contact us via email (auratalkai@gmail.com), we will use your email only to respond.</p>

@@ -20,6 +20,7 @@ export type Database = {
           created_at: string | null
           date: string
           id: string
+          is_premium: boolean | null
           message_count: number | null
           updated_at: string | null
           user_id: string
@@ -29,6 +30,7 @@ export type Database = {
           created_at?: string | null
           date?: string
           id?: string
+          is_premium?: boolean | null
           message_count?: number | null
           updated_at?: string | null
           user_id: string
@@ -38,6 +40,7 @@ export type Database = {
           created_at?: string | null
           date?: string
           id?: string
+          is_premium?: boolean | null
           message_count?: number | null
           updated_at?: string | null
           user_id?: string
@@ -95,6 +98,36 @@ export type Database = {
           plan_type?: string
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      trial_usage: {
+        Row: {
+          created_at: string | null
+          id: string
+          interaction_count: number | null
+          ip_address: string | null
+          session_id: string
+          updated_at: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          interaction_count?: number | null
+          ip_address?: string | null
+          session_id: string
+          updated_at?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          interaction_count?: number | null
+          ip_address?: string | null
+          session_id?: string
+          updated_at?: string | null
+          user_agent?: string | null
         }
         Relationships: []
       }
