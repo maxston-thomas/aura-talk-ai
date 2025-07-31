@@ -30,7 +30,7 @@ const Index = () => {
   const [showSupportSection, setShowSupportSection] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
-  // Reset all states when user logs out
+  // Reset all states when user logs out and navigate to chat when user logs in
   useEffect(() => {
     if (!user && !loading) {
       setSelectedMood('');
@@ -40,6 +40,10 @@ const Index = () => {
       setShowPrivacy(false);
       setShowTerms(false);
       setShowSupportSection(false);
+    } else if (user && !loading) {
+      // Navigate to chat when user logs in
+      setShowChat(true);
+      setSelectedMood('Pleasant'); // Default mood
     }
   }, [user, loading]);
 
@@ -162,12 +166,6 @@ const Index = () => {
               <h2 className="text-xl sm:text-2xl lg:text-3xl text-slate-600 dark:text-slate-400 font-medium">
                 Your AI powered Emotional Companion
               </h2>
-              <div className="flex items-center justify-center gap-2 mt-4">
-                <Crown className="w-5 h-5 text-amber-500" />
-                <span className="text-lg font-semibold text-amber-600 dark:text-amber-400">
-                  Premium Subscription Required
-                </span>
-              </div>
             </div>
 
             <div className="space-y-4 max-w-3xl mx-auto">
