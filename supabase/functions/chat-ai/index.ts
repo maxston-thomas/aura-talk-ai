@@ -5,7 +5,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://mnzrsmbtlsmmrbdrwafh.supabase.co',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
@@ -68,7 +68,7 @@ serve(async (req) => {
     console.log('Chat AI function called');
     
     const { userMessage, mode, mood } = await req.json();
-    console.log('Request data:', { userMessage, mode, mood });
+    console.log('Request received with mode:', mode, 'mood:', mood);
 
     if (!openAIApiKey) {
       console.log('No OpenAI API key found, using fallback response');
@@ -128,7 +128,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log('OpenAI response data:', data);
+    console.log('OpenAI API response received successfully');
     
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       console.error('Invalid OpenAI response structure:', data);
@@ -143,7 +143,7 @@ serve(async (req) => {
     
     const aiResponse = data.choices[0].message.content;
     
-    console.log('AI response generated successfully:', aiResponse);
+    console.log('AI response generated successfully');
     return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
