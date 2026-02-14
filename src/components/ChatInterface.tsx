@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
 import Header from './Header';
 import SupportSection from './SupportSection';
 import Footer from './Footer';
@@ -28,8 +27,6 @@ const ChatInterface = ({
   onPrivacyClick, 
   onTermsClick 
 }: ChatInterfaceProps) => {
-  const { user } = useAuth();
-  
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -50,36 +47,32 @@ const ChatInterface = ({
   const abortControllerRef = useRef<AbortController | null>(null);
   const supportPanelTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Check if support panel should be shown based on first-time chat and 3-day cooldown
+  // Check if support panel should be shown based on 3-day cooldown
   useEffect(() => {
     const checkSupportPanelDisplay = () => {
-      const lastShownKey = `supportPanel_lastShown_${user?.id}`;
+      const lastShownKey = 'supportPanel_lastShown';
       const lastShown = localStorage.getItem(lastShownKey);
-      const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000); // 3 days in milliseconds
+      const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
       
       if (!lastShown || parseInt(lastShown) < threeDaysAgo) {
-        // Show support panel for first-time users or after 3-day cooldown
         setShowFloatingSupportPanel(true);
         setHasShownSupportPanel(true);
         localStorage.setItem(lastShownKey, Date.now().toString());
         
-        // Auto-close after 5 seconds
         supportPanelTimerRef.current = setTimeout(() => {
           setShowFloatingSupportPanel(false);
         }, 5000);
       }
     };
 
-    // Only check on component mount for first-time display
-    if (user && !hasShownSupportPanel) {
+    if (!hasShownSupportPanel) {
       checkSupportPanelDisplay();
     }
-  }, [user, hasShownSupportPanel]);
+  }, [hasShownSupportPanel]);
 
   // Placeholder animation with proper cleanup
   useEffect(() => {
     if (isInputFocused || hasUserTyped || inputValue.length > 0) {
-      // Clear any existing timeout
       if (placeholderTimeoutRef.current) {
         clearTimeout(placeholderTimeoutRef.current);
         placeholderTimeoutRef.current = null;
@@ -102,51 +95,43 @@ const ChatInterface = ({
       const currentPhrase = phrases[currentPhraseIndex];
       
       if (!isDeleting) {
-        // Typing phase
         currentText = currentPhrase.substring(0, currentCharIndex + 1);
         currentCharIndex++;
         
         if (currentCharIndex === currentPhrase.length) {
-          // Finished typing current phrase, start deleting after pause
           isDeleting = true;
           placeholderTimeoutRef.current = setTimeout(() => {
             typeEffect();
-          }, 2000); // Pause before deleting
+          }, 2000);
           setPlaceholderText(currentText);
           return;
         }
       } else {
-        // Deleting phase
         currentText = currentPhrase.substring(0, currentCharIndex - 1);
         currentCharIndex--;
         
         if (currentCharIndex === 0) {
-          // Finished deleting, move to next phrase
           isDeleting = false;
           currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
           placeholderTimeoutRef.current = setTimeout(() => {
             typeEffect();
-          }, 500); // Brief pause before typing next phrase
+          }, 500);
           setPlaceholderText(currentText);
           return;
         }
       }
       
       setPlaceholderText(currentText);
-      
-      // Continue the animation with consistent timing
-      const speed = isDeleting ? 50 : 100; // Faster deletion, slower typing
+      const speed = isDeleting ? 50 : 100;
       placeholderTimeoutRef.current = setTimeout(() => {
         typeEffect();
       }, speed);
     };
 
-    // Start the animation
     placeholderTimeoutRef.current = setTimeout(() => {
       typeEffect();
     }, 100);
 
-    // Cleanup function
     return () => {
       if (placeholderTimeoutRef.current) {
         clearTimeout(placeholderTimeoutRef.current);
@@ -160,14 +145,10 @@ const ChatInterface = ({
   };
 
   useEffect(() => {
-    // Only scroll when new messages are added, not during typing animation
     scrollToBottom();
   }, [messages]);
 
-  // ... keep existing code (useEffect for initial message)
-
   useEffect(() => {
-    // Initialize conversation based on mood and mode
     const getInitialMessage = () => {
       const moodMessages = {
         pleasant: "I can sense you're feeling good today! That's wonderful. I'm here to share in your positive energy.",
@@ -194,7 +175,6 @@ const ChatInterface = ({
   }, [mood, selectedMode]);
 
   const simulateTyping = (text: string, callback: () => void) => {
-    // Clear any existing typing interval
     if (typingIntervalRef.current) {
       clearInterval(typingIntervalRef.current);
       typingIntervalRef.current = null;
@@ -219,7 +199,7 @@ const ChatInterface = ({
         setTypingText('');
         callback();
       }
-    }, 25); // Faster typing speed
+    }, 25);
   };
 
   const cancelTyping = () => {
@@ -252,7 +232,6 @@ const ChatInterface = ({
     abortControllerRef.current = new AbortController();
 
     try {
-      console.log('Sending message to AI service:', { content: userMessage.content, mode: selectedMode, mood });
       const aiResponse = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
       
       if (!abortControllerRef.current?.signal.aborted) {
@@ -263,7 +242,6 @@ const ChatInterface = ({
             sender: 'ai',
             timestamp: new Date(),
           };
-          
           setMessages(prev => [...prev, aiMessage]);
         });
       }
@@ -291,15 +269,10 @@ const ChatInterface = ({
     }
   };
 
-  const handleInputFocus = () => {
-    setIsInputFocused(true);
-  };
-
+  const handleInputFocus = () => { setIsInputFocused(true); };
   const handleInputBlur = () => {
     setIsInputFocused(false);
-    if (inputValue.length === 0) {
-      setHasUserTyped(false);
-    }
+    if (inputValue.length === 0) setHasUserTyped(false);
   };
 
   const handleModeSelect = (mode: string) => {
@@ -310,33 +283,21 @@ const ChatInterface = ({
   };
 
   const closeFloatingSupportPanel = () => {
-    if (supportPanelTimerRef.current) {
-      clearTimeout(supportPanelTimerRef.current);
-    }
+    if (supportPanelTimerRef.current) clearTimeout(supportPanelTimerRef.current);
     setShowFloatingSupportPanel(false);
   };
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (typingIntervalRef.current) {
-        clearInterval(typingIntervalRef.current);
-      }
-      if (placeholderTimeoutRef.current) {
-        clearTimeout(placeholderTimeoutRef.current);
-      }
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      if (supportPanelTimerRef.current) {
-        clearTimeout(supportPanelTimerRef.current);
-      }
+      if (typingIntervalRef.current) clearInterval(typingIntervalRef.current);
+      if (placeholderTimeoutRef.current) clearTimeout(placeholderTimeoutRef.current);
+      if (abortControllerRef.current) abortControllerRef.current.abort();
+      if (supportPanelTimerRef.current) clearTimeout(supportPanelTimerRef.current);
     };
   }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden flex flex-col">
-      {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20"></div>
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
       
@@ -355,7 +316,6 @@ const ChatInterface = ({
         isTyping={isTyping}
       />
       
-      {/* Content with padding to avoid header collision */}
       <div className="relative z-10 container mx-auto px-3 sm:px-4 py-6 pt-20 max-w-4xl flex-1 flex flex-col">
         <ChatHeader 
           mood={mood}
@@ -365,7 +325,6 @@ const ChatInterface = ({
           showSupportSection={showSupportSection}
         />
 
-        {/* Support Section */}
         {showSupportSection && (
           <div className="mb-4">
             <SupportSection />
@@ -391,7 +350,6 @@ const ChatInterface = ({
           isTyping={isTyping}
         />
 
-        {/* Footer in chat */}
         <div className="mt-4">
           <Footer
             onAboutClick={onAboutClick}
