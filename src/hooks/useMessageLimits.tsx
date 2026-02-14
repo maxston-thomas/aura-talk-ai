@@ -1,6 +1,4 @@
-
 import { useState } from 'react';
-import { useAuth } from './useAuth';
 
 interface MessageLimits {
   canSend: boolean;
@@ -10,7 +8,6 @@ interface MessageLimits {
 }
 
 export function useMessageLimits() {
-  const { user } = useAuth();
   const [limits] = useState<MessageLimits>({
     canSend: true,
     currentCount: 0,
@@ -18,17 +15,9 @@ export function useMessageLimits() {
     loading: false
   });
 
-  const incrementCount = async () => {
-    // No-op since there are no limits
-  };
-
-  const resetAfterAd = async () => {
-    // No-op since there are no limits
-  };
-
-  const checkLimits = async () => {
-    // No-op since there are no limits
-  };
+  const incrementCount = async () => {};
+  const resetAfterAd = async () => {};
+  const checkLimits = async () => {};
 
   return {
     ...limits,
