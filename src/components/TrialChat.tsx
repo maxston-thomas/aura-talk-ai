@@ -26,7 +26,7 @@ const TrialChat = ({ onSubscribeClick, onSupportClick }: TrialChatProps) => {
   const [showUpgrade, setShowUpgrade] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const typingIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,18 +36,8 @@ const TrialChat = ({ onSubscribeClick, onSupportClick }: TrialChatProps) => {
     scrollToBottom();
   }, [messages]);
 
-  const trackTrialUsage = async () => {
-    try {
-      await supabase.from('trial_usage').upsert({
-        session_id: sessionId,
-        ip_address: 'unknown', // You could get this from an IP service if needed
-        user_agent: navigator.userAgent,
-        interaction_count: interactionCount + 1,
-      });
-    } catch (error) {
-      console.error('Error tracking trial usage:', error);
-    }
-  };
+  // Trial usage is tracked & enforced server-side in the chat-ai edge function.
+
 
   const simulateTyping = (text: string, callback: () => void) => {
     if (typingIntervalRef.current) {
@@ -104,18 +94,23 @@ const TrialChat = ({ onSubscribeClick, onSupportClick }: TrialChatProps) => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     
-    const newCount = interactionCount + 1;
-    setInteractionCount(newCount);
-    await trackTrialUsage();
-
     try {
-      const aiResponse = await aiChatService.generateResponse(userMessage.content, selectedMode, selectedMood);
-      
-      let finalResponse = aiResponse;
-      if (newCount >= 4) {
-        finalResponse += "\n\n✨ You have " + (5 - newCount) + " trial interaction" + (5 - newCount === 1 ? '' : 's') + " remaining. Subscribe for unlimited access!";
+      const aiResult = await aiChatService.generateResponse(userMessage.content, selectedMode, selectedMood, sessionId);
+
+      if (aiResult.limitReached) {
+        setShowUpgrade(true);
+        return;
       }
-      
+
+      const serverCount = (aiResult as any).remaining !== undefined ? 5 - (aiResult.remaining ?? 0) : interactionCount + 1;
+      setInteractionCount(serverCount);
+
+      let finalResponse = aiResult.response;
+      const remaining = aiResult.remaining ?? Math.max(0, 5 - serverCount);
+      if (remaining <= 1) {
+        finalResponse += `\n\n✨ You have ${remaining} trial interaction${remaining === 1 ? '' : 's'} remaining. Subscribe for unlimited access!`;
+      }
+
       simulateTyping(finalResponse, () => {
         const aiMessage: ChatMessage = {
           id: (Date.now() + 1).toString(),
@@ -123,10 +118,10 @@ const TrialChat = ({ onSubscribeClick, onSupportClick }: TrialChatProps) => {
           sender: 'ai',
           timestamp: new Date(),
         };
-        
+
         setMessages(prev => [...prev, aiMessage]);
-        
-        if (newCount >= 5) {
+
+        if (remaining <= 0) {
           setTimeout(() => setShowUpgrade(true), 1000);
         }
       });

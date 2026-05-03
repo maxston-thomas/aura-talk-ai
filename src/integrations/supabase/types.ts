@@ -106,28 +106,22 @@ export type Database = {
           created_at: string | null
           id: string
           interaction_count: number | null
-          ip_address: string | null
           session_id: string
           updated_at: string | null
-          user_agent: string | null
         }
         Insert: {
           created_at?: string | null
           id?: string
           interaction_count?: number | null
-          ip_address?: string | null
           session_id: string
           updated_at?: string | null
-          user_agent?: string | null
         }
         Update: {
           created_at?: string | null
           id?: string
           interaction_count?: number | null
-          ip_address?: string | null
           session_id?: string
           updated_at?: string | null
-          user_agent?: string | null
         }
         Relationships: []
       }

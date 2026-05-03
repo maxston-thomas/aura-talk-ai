@@ -42,10 +42,10 @@ const ChatInterface = ({
   const [hasShownSupportPanel, setHasShownSupportPanel] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const placeholderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const placeholderTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const supportPanelTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const supportPanelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Check if support panel should be shown based on 3-day cooldown
   useEffect(() => {
@@ -232,7 +232,8 @@ const ChatInterface = ({
     abortControllerRef.current = new AbortController();
 
     try {
-      const aiResponse = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
+      const aiResult = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
+      const aiResponse = aiResult.response;
       
       if (!abortControllerRef.current?.signal.aborted) {
         simulateTyping(aiResponse, () => {
