@@ -232,7 +232,8 @@ const ChatInterface = ({
     abortControllerRef.current = new AbortController();
 
     try {
-      const aiResponse = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
+      const aiResult = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
+      const aiResponse = aiResult.response;
       
       if (!abortControllerRef.current?.signal.aborted) {
         simulateTyping(aiResponse, () => {
