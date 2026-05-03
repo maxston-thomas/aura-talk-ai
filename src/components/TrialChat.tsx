@@ -26,7 +26,7 @@ const TrialChat = ({ onSubscribeClick, onSupportClick }: TrialChatProps) => {
   const [showUpgrade, setShowUpgrade] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const typingIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
