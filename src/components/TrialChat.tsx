@@ -36,18 +36,8 @@ const TrialChat = ({ onSubscribeClick, onSupportClick }: TrialChatProps) => {
     scrollToBottom();
   }, [messages]);
 
-  const trackTrialUsage = async () => {
-    try {
-      await supabase.from('trial_usage').upsert({
-        session_id: sessionId,
-        ip_address: 'unknown', // You could get this from an IP service if needed
-        user_agent: navigator.userAgent,
-        interaction_count: interactionCount + 1,
-      });
-    } catch (error) {
-      console.error('Error tracking trial usage:', error);
-    }
-  };
+  // Trial usage is tracked & enforced server-side in the chat-ai edge function.
+
 
   const simulateTyping = (text: string, callback: () => void) => {
     if (typingIntervalRef.current) {
