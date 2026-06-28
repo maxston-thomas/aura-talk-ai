@@ -8,11 +8,9 @@ import PrivacyPolicy from '@/components/PrivacyPolicy';
 import TermsConditions from '@/components/TermsConditions';
 import SupportSection from '@/components/SupportSection';
 import TrialChat from '@/components/TrialChat';
-import SubscriptionModal from '@/components/SubscriptionModal';
-import { Heart, Brain, MessageCircle, Shield, Zap, Users, Star, Sparkles, Smile, Frown, Ear, Lightbulb, TrendingUp, Infinity, Crown, Check } from 'lucide-react';
+import { Heart, Brain, MessageCircle, Shield, Zap, Users, Star, Sparkles, Smile, Frown, Ear, Lightbulb, TrendingUp, Infinity } from 'lucide-react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from 'sonner';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -21,7 +19,6 @@ const Home = () => {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showSupportSection, setShowSupportSection] = useState(false);
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
 
   const handleAboutClick = () => { setShowAbout(true); setShowSupportSection(false); };
   const handleContactClick = () => { setShowContact(true); setShowSupportSection(false); };
@@ -34,15 +31,6 @@ const Home = () => {
     setShowContact(false);
     setShowPrivacy(false);
     setShowTerms(false);
-  };
-
-  const handleSubscribeClick = () => {
-    setShowSubscriptionModal(true);
-  };
-
-  const handleActualSubscribe = () => {
-    toast.info('Subscription coming soon! Please contact support for early access.');
-    setShowSubscriptionModal(false);
   };
 
   const handleBackFromPage = () => {
@@ -64,7 +52,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-700 relative overflow-hidden">
-      {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-600/20 dark:via-purple-600/20 dark:to-pink-600/20"></div>
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/30 dark:to-purple-600/30 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-pink-400/20 to-red-400/20 dark:from-pink-600/30 dark:to-red-600/30 rounded-full blur-3xl animate-pulse"></div>
@@ -73,28 +60,23 @@ const Home = () => {
 
       <div className="relative z-10 container mx-auto px-3 sm:px-4 py-16 sm:py-24 max-w-6xl">
         <div className="space-y-12">
-          {/* Hero Section */}
+          {/* Hero */}
           <div className="text-center space-y-8 max-w-4xl mx-auto">
             <div className="w-20 h-20 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse shadow-2xl">
               <Sparkles className="w-10 h-10 text-white" />
             </div>
-            
+
             <div className="space-y-4">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-800 dark:text-slate-200">
-                AuraTalk
-              </h1>
-              <h2 className="text-xl sm:text-2xl lg:text-3xl text-slate-600 dark:text-slate-400 font-medium">
-                Your AI powered Emotional Companion
-              </h2>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-800 dark:text-slate-200">AuraTalk</h1>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl text-slate-600 dark:text-slate-400 font-medium">Your AI powered Emotional Companion</h2>
             </div>
 
             <div className="space-y-4 max-w-3xl mx-auto">
               <p className="text-lg text-slate-600 dark:text-slate-400 italic">"Professional emotional support with complete privacy"</p>
               <p className="text-lg text-slate-600 dark:text-slate-400 italic">"Unlimited conversations, no data stored"</p>
-              <p className="text-lg text-slate-600 dark:text-slate-400 italic">"Your personal AI emotional companion"</p>
+              <p className="text-lg text-slate-600 dark:text-slate-400 italic">"Free, open access — no signups, no barriers"</p>
             </div>
 
-            {/* Privacy Guarantee */}
             <div className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border-white/30 dark:border-slate-700/30 rounded-2xl p-6 max-w-2xl mx-auto">
               <div className="flex items-center justify-center space-x-3 mb-4">
                 <Shield className="w-6 h-6 text-green-500" />
@@ -104,56 +86,42 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Trial Chat Section */}
+          {/* Quick chat */}
           <div className="max-w-3xl mx-auto">
-            <TrialChat 
-              onSubscribeClick={handleSubscribeClick}
-              onSupportClick={handleSupportClick}
-            />
+            <TrialChat onSupportClick={handleSupportClick} />
           </div>
 
-          {/* Subscription Information */}
+          {/* Donation / Start chat */}
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-slate-200">Premium Subscription</h2>
-            
             <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800 p-8">
               <div className="text-center space-y-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto">
-                  <Crown className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 bg-gradient-to-r from-rose-400 to-pink-500 rounded-full flex items-center justify-center mx-auto">
+                  <Heart className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <div className="text-5xl font-bold text-slate-800 dark:text-slate-200 mb-2">
-                    ₹199<span className="text-xl font-normal text-slate-600 dark:text-slate-400">/month</span>
-                  </div>
-                  <p className="text-lg text-slate-600 dark:text-slate-400">Unlimited emotional support conversations</p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-4 text-left">
-                  {["Unlimited AI conversations", "All mood & conversation modes", "Priority emotional support", "Advanced AI personality", "Faster response times", "No daily limits"].map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-slate-700 dark:text-slate-300">{feature}</span>
-                    </div>
-                  ))}
+                  <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">Free & Unlimited</h3>
+                  <p className="text-lg text-slate-600 dark:text-slate-400">
+                    AuraTalk is completely free to use — no signups, no limits. If it helps you, please consider supporting us with a donation to keep the servers running.
+                  </p>
                 </div>
 
                 <div className="space-y-4">
-                  <Button 
-                    onClick={handleSubscribeClick}
+                  <Button
+                    onClick={handleStartChat}
                     size="lg"
                     className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl py-4 text-lg font-semibold"
                   >
-                    <Crown className="w-5 h-5 mr-2" />
-                    Subscribe Now
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Start Chatting
                   </Button>
-                  
-                  <Button 
-                    onClick={handleStartChat}
+
+                  <Button
+                    onClick={handleSupportClick}
                     variant="outline"
-                    className="w-full border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl py-4"
+                    className="w-full border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl py-4"
                   >
                     <Heart className="w-5 h-5 mr-2" />
-                    Start Chatting
+                    Support AuraTalk
                   </Button>
                 </div>
               </div>
@@ -169,7 +137,6 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Mood Selection */}
             <div className="space-y-8">
               <div className="text-center space-y-4">
                 <h3 className="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-slate-200">Choose Your Mood</h3>
@@ -177,7 +144,7 @@ const Home = () => {
                   Start every conversation by sharing how you're feeling.
                 </p>
               </div>
-              
+
               <div className="grid md:grid-cols-3 gap-8">
                 <Card className="bg-green-50/80 dark:bg-green-900/20 backdrop-blur-md border-green-200/50 dark:border-green-800/30 p-8 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                   <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -186,7 +153,7 @@ const Home = () => {
                   <h4 className="text-2xl font-semibold text-green-700 dark:text-green-400 mb-4">Pleasant</h4>
                   <p className="text-green-600 dark:text-green-300 leading-relaxed">Share your joy, excitement, and positive experiences.</p>
                 </Card>
-                
+
                 <Card className="bg-blue-50/80 dark:bg-blue-900/20 backdrop-blur-md border-blue-200/50 dark:border-blue-800/30 p-8 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                   <div className="w-16 h-16 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Frown className="w-8 h-8 text-white" />
@@ -194,7 +161,7 @@ const Home = () => {
                   <h4 className="text-2xl font-semibold text-blue-700 dark:text-blue-400 mb-4">Unpleasant</h4>
                   <p className="text-blue-600 dark:text-blue-300 leading-relaxed">When you're going through tough times, AuraTalk provides comfort.</p>
                 </Card>
-                
+
                 <Card className="bg-purple-50/80 dark:bg-purple-900/20 backdrop-blur-md border-purple-200/50 dark:border-purple-800/30 p-8 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                   <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
                     <span className="text-2xl">🧘</span>
@@ -205,7 +172,6 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Conversation Modes */}
             <div className="space-y-8">
               <div className="text-center space-y-4">
                 <h3 className="text-2xl sm:text-3xl font-semibold text-slate-800 dark:text-slate-200">Conversation Modes</h3>
@@ -213,7 +179,7 @@ const Home = () => {
                   Choose how you want AuraTalk to support you.
                 </p>
               </div>
-              
+
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-6 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                   <Ear className="w-12 h-12 text-blue-500 mx-auto mb-4" />
@@ -239,7 +205,7 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Why Choose AuraTalk */}
+          {/* Why Choose */}
           <div className="space-y-8">
             <div className="text-center space-y-6">
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-slate-200">Why Choose AuraTalk?</h2>
@@ -247,7 +213,7 @@ const Home = () => {
                 Experience the next generation of emotional support technology.
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <Card className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/30 dark:border-slate-700/30 p-8 text-center hover:scale-105 transition-transform duration-300 shadow-lg">
                 <Brain className="w-16 h-16 text-blue-500 mx-auto mb-6" />
@@ -308,7 +274,7 @@ const Home = () => {
         </div>
       </div>
 
-      <Footer 
+      <Footer
         onAboutClick={handleAboutClick}
         onContactClick={handleContactClick}
         onPrivacyClick={handlePrivacyClick}
@@ -316,16 +282,12 @@ const Home = () => {
       />
 
       {showSupportSection && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <SupportSection />
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowSupportSection(false)}>
+          <div onClick={(e) => e.stopPropagation()}>
+            <SupportSection />
+          </div>
         </div>
       )}
-
-      <SubscriptionModal
-        open={showSubscriptionModal}
-        onClose={() => setShowSubscriptionModal(false)}
-        onSubscribe={handleActualSubscribe}
-      />
     </div>
   );
 };
