@@ -1,12 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
-const TRIAL_LIMIT = 5;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -31,49 +26,13 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { userMessage, mode, mood, sessionId } = body;
+    const { userMessage, mode, mood } = body;
 
     if (typeof userMessage !== 'string' || userMessage.length === 0 || userMessage.length > 2000) {
       return new Response(JSON.stringify({ error: 'Invalid message' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    if (typeof sessionId !== 'string' || sessionId.length < 8 || sessionId.length > 128) {
-      return new Response(JSON.stringify({ error: 'Invalid session' }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Server-side trial enforcement using service role
-    const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
-
-    const { data: existing } = await admin
-      .from('trial_usage')
-      .select('id, interaction_count')
-      .eq('session_id', sessionId)
-      .maybeSingle();
-
-    const currentCount = existing?.interaction_count ?? 0;
-    if (currentCount >= TRIAL_LIMIT) {
-      return new Response(JSON.stringify({ error: 'Trial limit reached', limitReached: true }), {
-        status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    const newCount = currentCount + 1;
-    if (existing) {
-      await admin.from('trial_usage').update({
-        interaction_count: newCount,
-        updated_at: new Date().toISOString(),
-      }).eq('id', existing.id);
-    } else {
-      await admin.from('trial_usage').insert({
-        session_id: sessionId,
-        interaction_count: newCount,
-      });
-    }
-
-    const remaining = TRIAL_LIMIT - newCount;
 
     let aiResponse: string;
 
@@ -129,7 +88,7 @@ serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ response: aiResponse, remaining, interactionCount: newCount }), {
+    return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {

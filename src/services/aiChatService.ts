@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface ChatMessage {
@@ -9,19 +8,17 @@ export interface ChatMessage {
 }
 
 class AiChatService {
-  async generateResponse(userMessage: string, mode: string, mood: string, sessionId?: string): Promise<{ response: string; remaining?: number; limitReached?: boolean }> {
+  async generateResponse(userMessage: string, mode: string, mood: string): Promise<{ response: string }> {
     try {
       const { data, error } = await supabase.functions.invoke('chat-ai', {
-        body: { userMessage, mode, mood, sessionId },
+        body: { userMessage, mode, mood },
       });
 
       if (error) {
-        const limitReached = (data as any)?.limitReached === true;
-        if (limitReached) return { response: '', remaining: 0, limitReached: true };
         throw new Error('Failed to generate response');
       }
 
-      return { response: data.response, remaining: data.remaining };
+      return { response: data.response };
     } catch (error) {
       console.error('Error generating AI response:', error);
       throw error;
