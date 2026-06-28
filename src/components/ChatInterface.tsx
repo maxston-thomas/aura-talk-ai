@@ -232,12 +232,7 @@ const ChatInterface = ({
     abortControllerRef.current = new AbortController();
 
     try {
-      let sessionId = localStorage.getItem('chat_session_id');
-      if (!sessionId) {
-        sessionId = (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`);
-        localStorage.setItem('chat_session_id', sessionId);
-      }
-      const aiResult = await aiChatService.generateResponse(userMessage.content, selectedMode, mood, sessionId);
+      const aiResult = await aiChatService.generateResponse(userMessage.content, selectedMode, mood);
       const aiResponse = aiResult.response;
       
       if (!abortControllerRef.current?.signal.aborted) {
