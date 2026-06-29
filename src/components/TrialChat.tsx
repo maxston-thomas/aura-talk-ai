@@ -100,7 +100,7 @@ const TrialChat = ({ onSupportClick }: TrialChatProps) => {
           </h3>
         </div>
         <p className="text-slate-600 dark:text-slate-400">
-          Unlimited AI conversations • No signup required
+          AI conversations • No signup required
         </p>
       </div>
 
