@@ -73,7 +73,6 @@ const Home = () => {
 
             <div className="space-y-4 max-w-3xl mx-auto">
               <p className="text-lg text-slate-600 dark:text-slate-400 italic">"Professional emotional support with complete privacy"</p>
-              <p className="text-lg text-slate-600 dark:text-slate-400 italic">"Unlimited conversations, no data stored"</p>
               <p className="text-lg text-slate-600 dark:text-slate-400 italic">"Free, open access — no signups, no barriers"</p>
             </div>
 
@@ -99,7 +98,7 @@ const Home = () => {
                   <Heart className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">Free & Unlimited</h3>
+                  <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-200 mb-2">Free</h3>
                   <p className="text-lg text-slate-600 dark:text-slate-400">
                     AuraTalk is completely free to use — no signups, no limits. If it helps you, please consider supporting us with a donation to keep the servers running.
                   </p>

@@ -43,11 +43,9 @@ const TermsConditions = ({ onBack }: TermsConditionsProps) => {
             
             <p className="mb-6">Welcome to AuraTalk — a privacy-focused, conversational AI platform. By using this app, you agree to the following terms:</p>
 
-            <h3 className="text-lg sm:text-xl font-semibold mb-3">1. Subscription Service</h3>
-            <p className="mb-4">AuraTalk operates as a premium subscription service at ₹199/month for unlimited access.</p>
-            <p className="mb-4">We provide 5 free trial interactions for evaluation purposes.</p>
+            <h3 className="text-lg sm:text-xl font-semibold mb-3">1. Free Service</h3>
+            <p className="mb-4">AuraTalk is completely free to use.</p>
             <p className="mb-4">You agree to use it responsibly and not for harmful or abusive purposes.</p>
-            <p className="mb-6">Subscription can be cancelled at any time through your account settings.</p>
 
             <h3 className="text-lg sm:text-xl font-semibold mb-3">2. No Guarantees</h3>
             <p className="mb-4">While we strive for high availability, AuraTalk is provided "as is" without warranties.</p>
